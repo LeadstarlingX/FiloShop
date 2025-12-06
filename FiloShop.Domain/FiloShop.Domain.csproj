@@ -6,4 +6,8 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\FiloShop.SharedKernel\FiloShop.SharedKernel.csproj" />
+    </ItemGroup>
+
 </Project>

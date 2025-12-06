@@ -6,4 +6,8 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\FiloShop.Application\FiloShop.Application.csproj" />
+    </ItemGroup>
+
 </Project>

@@ -6,4 +6,14 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\FiloShop.Api\FiloShop.Api.csproj" />
+      <ProjectReference Include="..\FiloShop.Application\FiloShop.Application.csproj" />
+      <ProjectReference Include="..\FiloShop.Domain\FiloShop.Domain.csproj" />
+      <ProjectReference Include="..\FiloShop.Infrastructre.Persistence\FiloShop.Infrastructre.Persistence.csproj" />
+      <ProjectReference Include="..\FiloShop.Infrastructure.Services\FiloShop.Infrastructure.Services.csproj" />
+      <ProjectReference Include="..\FiloShop.Presentation\FiloShop.Presentation.csproj" />
+      <ProjectReference Include="..\FiloShop.SharedKernel\FiloShop.SharedKernel.csproj" />
+    </ItemGroup>
+
 </Project>
