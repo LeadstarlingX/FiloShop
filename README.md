@@ -11,12 +11,14 @@ FiloShop is a layered solution adopting a clean architecture approach. Each majo
 | [FiloShop.ArchitectureTests](./FiloShop.ArchitectureTests/README.md)  | Tests for enforcing architectural boundaries                                              |
 | [FiloShop.Domain](./FiloShop.Domain/README.md)                        | Core business entities and logic                                                          |
 | [FiloShop.Domain.UnitTests](./FiloShop.Domain.UnitTests/README.md)    | Unit tests for the domain layer                                                           |
-| [FiloShop.Infrastructure.Persistence](./FiloShop.Infrastructure.Persistence/README.md)    | Data persistence, repositories, and database concerns                                     |
-| [FiloShop.Infrastructure.Services](./FiloShop.Infrastructure.Services/README.md)          | Infrastructure services and integrations                                                  |
+| [FiloShop.Infrastructure.Persistence](./FiloShop.Infrastructure.Persistence/README.md) | Data persistence, repositories, and database concerns                                     |
+| [FiloShop.Infrastructure.Services](./FiloShop.Infrastructure.Services/README.md) | Infrastructure services and integrations                                                  |
 | [FiloShop.IntegrationTests](./FiloShop.IntegrationTests/README.md)    | End-to-end and integration tests                                                          |
 | [FiloShop.NamingTests](./FiloShop.NamingTests/README.md)              | Tests for naming conventions and guidelines                                               |
 | [FiloShop.Presentation](./FiloShop.Presentation/README.md)            | UI or presentation layer                                                                  |
-| [FiloShop.SharedKernel](./FiloShop.SharedKernel/README.md)            | Shared utility code and cross-cutting concerns                                            |
+| [FiloShop.SharedKernel](./FiloShop.SharedKernel/README.md)            | Foundational utilities and cross-cutting abstractions ready for use across all layers     |
+
+The [SharedKernel](./FiloShop.SharedKernel/README.md) layer already houses crucial, reusable components and patterns, and acts as a foundation for consistent best practices across the solution.
 
 Each layer has its own [README.md](./README.md) with further details as the implementation progresses.
 
