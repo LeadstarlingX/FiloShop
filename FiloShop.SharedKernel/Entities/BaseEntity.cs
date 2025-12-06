@@ -10,10 +10,9 @@ public abstract class BaseEntity
     {
     }
 
-    protected BaseEntity(Guid id, DateTime createdAt)
+    protected BaseEntity(Guid id)
     {
         Id = id;
-        CreatedAt = createdAt;
     }
 
     public Guid Id { get; init; }

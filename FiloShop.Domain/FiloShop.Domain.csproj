@@ -11,9 +11,19 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Folder Include="Baskets\Errors\" />
+      <Folder Include="Baskets\Services\" />
+      <Folder Include="Baskets\ValueObjects\" />
+      <Folder Include="CatalogBrands\Errors\" />
+      <Folder Include="CatalogBrands\Services\" />
+      <Folder Include="CatalogItem\Errors\" />
+      <Folder Include="CatalogItem\Services\" />
+      <Folder Include="CatalogTypes\Errors\" />
+      <Folder Include="CatalogTypes\Services\" />
+      <Folder Include="Order\Errors\" />
+      <Folder Include="Order\Services\" />
       <Folder Include="Users\Errors\" />
       <Folder Include="Users\Services\" />
-      <Folder Include="Users\ValueObjects\" />
     </ItemGroup>
 
 </Project>
