@@ -12,7 +12,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="CatalogItems\" />
       <Folder Include="Users\" />
     </ItemGroup>
 
