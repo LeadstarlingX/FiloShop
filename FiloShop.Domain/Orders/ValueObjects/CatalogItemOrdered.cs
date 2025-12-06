@@ -1,7 +1,7 @@
 ﻿using FiloShop.Domain.Shared.ValueObjects;
 using FiloShop.SharedKernel.Results;
 
-namespace FiloShop.Domain.Order.ValueObjects;
+namespace FiloShop.Domain.Orders.ValueObjects;
 
 public sealed record CatalogItemOrdered
 {

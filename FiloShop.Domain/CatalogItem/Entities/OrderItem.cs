@@ -1,4 +1,4 @@
-﻿using FiloShop.Domain.Order.ValueObjects;
+﻿using FiloShop.Domain.Orders.ValueObjects;
 using FiloShop.Domain.Shared.ValueObjects;
 using FiloShop.SharedKernel.Entities;
 using FiloShop.SharedKernel.Interfaces;

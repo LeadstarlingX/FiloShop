@@ -1,4 +1,4 @@
-﻿namespace FiloShop.Domain.Order.ValueObjects;
+﻿namespace FiloShop.Domain.Orders.ValueObjects;
 
 public sealed record Address(
     string Country,

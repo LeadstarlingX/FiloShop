@@ -1,13 +1,12 @@
 ﻿using FiloShop.Domain.CatalogItem.Entities;
-using FiloShop.Domain.Order.Events;
-using FiloShop.Domain.Order.ValueObjects;
-using FiloShop.Domain.Shared.ValueObjects;
+using FiloShop.Domain.Orders.Events;
+using FiloShop.Domain.Orders.ValueObjects;
 using FiloShop.Domain.Users.Entities;
 using FiloShop.SharedKernel.Entities;
 using FiloShop.SharedKernel.Interfaces;
 using FiloShop.SharedKernel.Results;
 
-namespace FiloShop.Domain.Order.Entities;
+namespace FiloShop.Domain.Orders.Entities;
 
 public class Order : BaseEntity, IAggregateRoot
 {
