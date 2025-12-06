@@ -1,0 +1,231 @@
+name: .NET CI/CD Pipeline
+
+
+on:
+  push:
+    branches: [ "master", "development" ]
+  pull_request:
+    branches: [ "master", "development" ]
+
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+
+jobs:
+  # ----------------------------------------------------------------
+  # JOB 1: Build & Test (CI - Continuous Integration)
+  # ----------------------------------------------------------------
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 9
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+
+      - name: Cache NuGet packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --no-restore --configuration Release
+
+      # --- Test Separation Step 1: Architecture Tests ---
+#      - name: Run Architecture Tests
+#        run: |
+#          dotnet run --project ./LeroTreat.ArchitectureTests/LeroTreat.ArchitectureTests.csproj \
+#            --configuration Release \
+#            -- --report-trx --report-trx-filename architecture-test-results.trx \
+#            --results-directory ./TestResults/Architecture
+#
+#      - name: Upload Architecture Test Results
+#        if: always() # Always run this, even if the tests failed
+#        uses: actions/upload-artifact@v4
+#        with:
+#          name: architecture-test-results
+#          path: ./TestResults/Architecture/architecture-test-results.trx
+#
+#      # --- Test Separation Step 2: Naming Tests ---
+#      - name: Run Naming Tests
+#        run: |
+#          dotnet test ./Bookyfi.NamingTests/Bookyfi.NamingTests.csproj \
+#            --no-build --configuration Release \
+#            --logger "trx;LogFileName=naming-test-results.trx" \
+#            --results-directory ./TestResults/Naming
+#
+#      - name: Upload Naming Test Results
+#        if: always()
+#        uses: actions/upload-artifact@v4
+#        with:
+#          name: naming-test-results
+#          path: ./TestResults/Naming/naming-test-results.trx
+#
+#      # --- Test Separation Step 3: Integration Tests ---
+#      # Note: TUnit uses Microsoft.Testing.Platform and requires dotnet run instead of dotnet test
+#      - name: Run Integration Tests
+#        run: |
+#          dotnet run --project ./Bookyfi.Application.IntegrationTests/Bookyfi.Application.IntegrationTests.csproj \
+#            --configuration Release \
+#            -- --report-trx --report-trx-filename integration-test-results.trx \
+#            --results-directory ./TestResults/Integration
+#
+#      - name: Upload Integration Test Results
+#        if: always()
+#        uses: actions/upload-artifact@v4
+#        with:
+#          name: integration-test-results
+#          path: ./TestResults/Integration/integration-test-results.trx
+#
+#
+      # --- Test Separation Step 4: Domain Unit Tests ---
+#      - name: Run Domain Unit Tests
+#        run: |
+#          dotnet run --project ./LeroTreat.Domain.UnitTests/LeroTreat.Domain.UnitTests.csproj \
+#            --configuration Release \
+#            -- --report-trx --report-trx-filename domain-unit-test-results.trx \
+#            --results-directory ./TestResults/DomainUnit
+#
+#      - name: Upload Domain Unit Test Results
+#        if: always()
+#        uses: actions/upload-artifact@v4
+#        with:
+#          name: domain-unit-test-results
+#          path: ./TestResults/DomainUnit/domain-unit-test-results.trx
+
+
+  # ----------------------------------------------------------------
+  # JOB 2: Docker Build Validation
+  # ----------------------------------------------------------------
+#  docker-validation:
+#    runs-on: ubuntu-latest
+#    needs: build-and-test
+#    timeout-minutes: 10
+#
+#    steps:
+#      - name: Check out code
+#        uses: actions/checkout@v4
+#
+#      - name: Set up Docker Buildx
+#        uses: docker/setup-buildx-action@v3
+#
+#      - name: Build Docker image (validation only, no push)
+#        uses: docker/build-push-action@v6
+#        with:
+#          context: .
+#          file: ./Bookyfi.Api/Dockerfile
+#          push: false
+#          tags: bookyfi:ci-test
+#          cache-from: type=gha
+#          cache-to: type=gha,mode=max
+
+# ----------------------------------------------------------------
+# JOB 3: Performance Test (CI - System Level)
+# This job runs after build-and-test. It starts your entire
+# application (API + DB) inside Docker and runs k6 against it.
+# ----------------------------------------------------------------
+#  performance-test:
+#    runs-on: ubuntu-latest
+#    needs: build-and-test # <-- This job only runs if 'build-and-test' succeeds
+#
+#    steps:
+#      - name: Check out code
+#        uses: actions/checkout@v4
+#
+#      - name: Set up Docker Buildx
+#        uses: docker/setup-buildx-action@v3
+#
+#      - name: Build and start containers
+#        run: docker compose up -d --wait
+#
+#      - name: Wait for API health check
+#        run: |
+#          echo "Waiting for API to be ready..."
+#          timeout 60 bash -c 'until curl -f http://localhost:8000/health; do sleep 2; done'
+#
+#      - name: Setup k6
+#        uses: grafana/k6-action@v0.3.1
+#        with:
+#          version: latest
+#
+#      - name: Build and start containers
+#        run: docker-compose up -d
+#
+#      - name: Wait for API to be healthy
+#        run: |
+#          echo "Waiting 30s for services to start..."
+#          sleep 30
+#          # A real health check would be better here
+#
+#      - name: Run k6 Performance Load Test
+#        run: k6 run ./Bookyfi.PerformanceTests/k6_load_test.js
+#        # This step will *automatically fail* if the thresholds
+#        # in your k6 script (e.g., p(95) > 500ms) are not met.
+#
+#      - name: Upload k6 results
+#        if: always()
+#        uses: actions/upload-artifact@v4
+#        with:
+#          name: k6-performance-results
+#          path: ./k6-results/
+#
+#      - name: Stop containers
+#        if: always() # Always run this, even if k6 failed
+#        run: docker-compose down
+
+# ----------------------------------------------------------------
+# JOB 4: Build & Push Docker Image (CD - Continuous Deployment)
+# This job runs *after* all validations pass. It only runs on a
+# push to 'master', *not* on a pull request.
+# ----------------------------------------------------------------
+#  build-and-push-docker:
+#    runs-on: ubuntu-latest
+#    needs: [build-and-test, docker-validation]
+#    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+#    timeout-minutes: 15
+#
+#    steps:
+#      - name: Check out code
+#        uses: actions/checkout@v4
+#
+#      - name: Set up Docker Buildx
+#        uses: docker/setup-buildx-action@v3
+#
+#      - name: Log in to GitHub Container Registry (ghcr.io)
+#        uses: docker/login-action@v3
+#        with:
+#          registry: ghcr.io
+#          username: ${{ github.repository_owner }}
+#          password: ${{ secrets.GITHUB_TOKEN }}
+#
+#      - name: Extract metadata (tags, labels)
+#        id: meta
+#        uses: docker/metadata-action@v5
+#        with:
+#          images: ghcr.io/${{ github.repository_owner }}/bookyfi
+#          tags: |
+#            type=raw,value=latest
+#            type=sha,prefix={{branch}}-
+#
+#      - name: Build and push Docker image
+#        uses: docker/build-push-action@v6
+#        with:
+#          context: .
+#          file: ./Bookyfi.Api/Dockerfile
+#          push: true
+#          tags: ${{ steps.meta.outputs.tags }}
+#          labels: ${{ steps.meta.outputs.labels }}
+#          cache-from: type=gha
+#          cache-to: type=gha,mode=max
