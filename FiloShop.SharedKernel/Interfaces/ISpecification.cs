@@ -2,7 +2,7 @@
 
 namespace FiloShop.SharedKernel.Interfaces
 {
-    public interface ISpecification<T> 
+    public interface ISpecification<T>
     {
         Expression<Func<T, bool>>? Criteria { get; }
         List<Expression<Func<T, object>>> Includes { get; }
