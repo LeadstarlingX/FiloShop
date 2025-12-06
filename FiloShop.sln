@@ -42,6 +42,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "solutionitems", "solutionit
 		README.md = README.md
 		LICENSE.md = LICENSE.md
 		CONTRIBUTION.md = CONTRIBUTION.md
+		compose.yaml = compose.yaml
 	EndProjectSection
 EndProject
 Global

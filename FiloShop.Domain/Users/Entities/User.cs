@@ -1,4 +1,5 @@
-﻿using FiloShop.Domain.Users.Events;
+﻿using FiloShop.Domain.Shared.ValueObjects;
+using FiloShop.Domain.Users.Events;
 using FiloShop.Domain.Users.ValueObjects;
 using FiloShop.SharedKernel.Entities;
 using FiloShop.SharedKernel.Interfaces;
@@ -27,20 +28,28 @@ public sealed class User : BaseEntity, IAggregateRoot
     {
     }
 
-    private User(Guid id, bool isActive) : base(id)
+    private User(Guid id ,FirstName firstName, LastName lastName,
+        Email email, bool isActive) : base(id)
     {
+        FirstName = firstName;
+        LastName = lastName;
+        Email = email;
         IsActive = isActive;
     }
 
-    public static Result<User> Create(bool isActive)
+    public static Result<User> Create(FirstName firstName, LastName lastName, Email email)
     {   
-        var user = new User(Guid.NewGuid(), isActive);
+        var user = new User(Guid.NewGuid(), firstName, lastName, email, true);
         user.RaiseDomainEvent(new UserCreatedDomainEvent(user.Id));
+        user._roles.Add(Role.Registered);
         return user;
     }
 
     #region Properties
     
+    public FirstName FirstName { get; private set; }
+    public LastName LastName { get; private set; }
+    public Email Email { get; private set; }
     public bool IsActive { get; private set; } = true;
 
     #endregion

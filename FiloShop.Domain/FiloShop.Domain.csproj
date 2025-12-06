@@ -22,7 +22,6 @@
       <Folder Include="CatalogTypes\Services\" />
       <Folder Include="Orders\Errors\" />
       <Folder Include="Orders\Services\" />
-      <Folder Include="Users\Errors\" />
       <Folder Include="Users\Services\" />
     </ItemGroup>
 

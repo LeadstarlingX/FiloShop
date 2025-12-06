@@ -1,0 +1,92 @@
+﻿services:
+  filoshop.api:
+    image: filoshop.api
+    container_name: FiloShop.Api
+    build:
+      context: .
+      dockerfile: FiloShop.Api/Dockerfile
+    ports:
+      - "8000:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Docker
+    depends_on:
+      filoshop-db:
+        condition: service_healthy
+    #      filoshop-idp:
+    #        condition: service_healthy
+      filoshop-idp:
+        condition: service_started
+      
+      filoshop-seq:
+        condition: service_started
+      
+      filoshop-redis:
+        condition: service_started
+    
+    restart: on-failure
+  
+  
+  filoshop-db:
+    image: postgres:18.0  # Consider using 16 (stable)
+    container_name: FiloShop.Db
+    environment:
+      - POSTGRES_DB=filoshop_docker
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - ./.containers/database:/var/lib/postgresql
+    ports:
+      - "5433:5432"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres -d filoshop_docker" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+  
+  filoshop-idp:
+    image: keycloak/keycloak:26.4
+    container_name: FiloShop.Identity
+    environment:
+      # <-- 2. FIXED: Use KEYCLOAK_ADMIN
+      - KC_BOOTSTRAP_ADMIN_USERNAME=admin
+      - KC_BOOTSTRAP_ADMIN_PASSWORD=admin
+      - KEYCLOAK_IMPORT=/tmp/filoshop-realm-export.json
+
+      - KC_DB=postgres
+      - KC_DB_URL=jdbc:postgresql://filoshop-db:5432/filoshop_docker
+      - KC_DB_USERNAME=postgres
+      - KC_DB_PASSWORD=postgres
+    volumes:
+      - ./.containers/identity:/opt/jboss/keycloak/standalone/data
+    #      - ./.files/filoshop-realm-export.json:/opt/keycloak/data/import/realm.json
+    depends_on:
+      filoshop-db:
+        condition: service_healthy
+    ports:
+      - "8001:8080"  # <-- 3. FIXED: Internal port is 8080
+    command: start-dev
+      #    healthcheck:
+      #      test: ["CMD-SHELL", "wget -q --spider --fail http://localhost:8080/health/ready || exit 1"]
+      #      interval: 10s
+      #      timeout: 5s
+      #      retries: 5
+    #      start_period: 30s
+  
+  
+  filoshop-seq:
+    image: datalust/seq:2025.2
+    container_name: FiloShop.Seq
+    environment:
+      - ACCEPT_EULA=Y
+      - SEQ_FIRSTRUN_NOAUTHENTICATION=True
+    ports:
+      - 5341:5341
+      - 8081:80
+  
+  filoshop-redis:
+    image: redis:8.4.0
+    container_name: FiloShop.Redis
+    restart: always
+    ports:
+      - "6379:6379"

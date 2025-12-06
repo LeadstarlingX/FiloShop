@@ -32,7 +32,7 @@ internal sealed class ConfigureSwaggerOptions : IConfigureNamedOptions<SwaggerGe
     {
         var openApiInfo = new OpenApiInfo
         {
-            Title = $"Bookyfi.Api v{apiVersionDescription.ApiVersion}",
+            Title = $"FiloShop.Api v{apiVersionDescription.ApiVersion}",
             Version = apiVersionDescription.ApiVersion.ToString()
         };
 

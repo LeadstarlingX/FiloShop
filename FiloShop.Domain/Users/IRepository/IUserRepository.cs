@@ -1,6 +1,15 @@
-﻿namespace FiloShop.Domain.Users.IRepository;
+﻿using FiloShop.Domain.Users.Entities;
+
+namespace FiloShop.Domain.Users.IRepository;
 
 public interface IUserRepository
 {
+    Task<User?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
+
+    void Add(User user);
+
+    Task<User?> GetByIdentityIdAsync(string identityId, CancellationToken cancellationToken = default);
+
+    Task<HashSet<string>> GetPermissionsAsync(string identityId, CancellationToken cancellationToken = default);
     
 }
