@@ -12,7 +12,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\FiloShop.Application\FiloShop.Application.csproj" />
-      <ProjectReference Include="..\FiloShop.Infrastructre.Persistence\FiloShop.Infrastructre.Persistence.csproj" />
+      <ProjectReference Include="..\FiloShop.Infrastructure.Persistence\FiloShop.Infrastructure.Persistence.csproj" />
       <ProjectReference Include="..\FiloShop.Infrastructure.Services\FiloShop.Infrastructure.Services.csproj" />
       <ProjectReference Include="..\FiloShop.Presentation\FiloShop.Presentation.csproj" />
     </ItemGroup>

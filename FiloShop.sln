@@ -30,7 +30,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FiloShop.Application", "Fil
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{E6198EF1-84C9-428F-8D37-F3791E4F3786}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FiloShop.Infrastructre.Persistence", "FiloShop.Infrastructre.Persistence\FiloShop.Infrastructre.Persistence.csproj", "{BEBB30D4-B6B2-49D6-81A7-7A96D396178D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FiloShop.Infrastructure.Persistence", "FiloShop.Infrastructure.Persistence\FiloShop.Infrastructure.Persistence.csproj", "{BEBB30D4-B6B2-49D6-81A7-7A96D396178D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FiloShop.Infrastructure.Services", "FiloShop.Infrastructure.Services\FiloShop.Infrastructure.Services.csproj", "{6645AB69-45C7-4788-A766-A3C7690BC050}"
 EndProject
