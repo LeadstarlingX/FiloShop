@@ -1,12 +1,12 @@
 ﻿using FiloShop.Domain.CatalogBrands.Entities;
-using FiloShop.Domain.CatalogItem.Events;
+using FiloShop.Domain.CatalogItems.Events;
 using FiloShop.Domain.CatalogTypes.Entites;
 using FiloShop.Domain.Shared.ValueObjects;
 using FiloShop.SharedKernel.Entities;
 using FiloShop.SharedKernel.Interfaces;
 using FiloShop.SharedKernel.Results;
 
-namespace FiloShop.Domain.CatalogItem.Entities;
+namespace FiloShop.Domain.CatalogItems.Entities;
 
 public sealed class CatalogItem : BaseEntity, IAggregateRoot
 {

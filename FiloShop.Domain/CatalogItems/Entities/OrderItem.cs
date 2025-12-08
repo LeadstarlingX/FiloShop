@@ -1,10 +1,9 @@
 ﻿using FiloShop.Domain.Orders.ValueObjects;
 using FiloShop.Domain.Shared.ValueObjects;
 using FiloShop.SharedKernel.Entities;
-using FiloShop.SharedKernel.Interfaces;
 using FiloShop.SharedKernel.Results;
 
-namespace FiloShop.Domain.CatalogItem.Entities;
+namespace FiloShop.Domain.CatalogItems.Entities;
 
 public sealed class OrderItem : BaseEntity
 {

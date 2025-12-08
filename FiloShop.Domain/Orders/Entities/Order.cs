@@ -1,4 +1,4 @@
-﻿using FiloShop.Domain.CatalogItem.Entities;
+﻿using FiloShop.Domain.CatalogItems.Entities;
 using FiloShop.Domain.Orders.Events;
 using FiloShop.Domain.Orders.ValueObjects;
 using FiloShop.Domain.Users.Entities;

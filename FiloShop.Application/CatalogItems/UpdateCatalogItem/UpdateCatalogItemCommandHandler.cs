@@ -7,10 +7,6 @@ public class UpdateCatalogItemCommandHandler : ICommandHandler<UpdateCatalogItem
 {
     public Task<Result> Handle(UpdateCatalogItemCommand request, CancellationToken cancellationToken)
     {
-        /*
-         * TODO
-         */
-        
         throw new NotImplementedException();
     }
 }

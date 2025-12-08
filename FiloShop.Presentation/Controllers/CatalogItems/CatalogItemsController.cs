@@ -3,7 +3,6 @@ using FiloShop.Application.CatalogItems.CreateCatalogItem;
 using FiloShop.Application.CatalogItems.DeleteCatalogItem;
 using FiloShop.Application.CatalogItems.GetCatalogItemById;
 using FiloShop.Application.CatalogItems.UpdateCatalogItem;
-using FiloShop.Domain.CatalogItem.Entities;
 using FiloShop.Presentation.Controllers.CatalogItems.Requests;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;

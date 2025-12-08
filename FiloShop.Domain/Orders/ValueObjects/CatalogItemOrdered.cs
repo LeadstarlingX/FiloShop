@@ -1,4 +1,5 @@
-﻿using FiloShop.Domain.Shared.ValueObjects;
+﻿using FiloShop.Domain.CatalogItems.Entities;
+using FiloShop.Domain.Shared.ValueObjects;
 using FiloShop.SharedKernel.Results;
 
 namespace FiloShop.Domain.Orders.ValueObjects;
@@ -17,7 +18,7 @@ public sealed record CatalogItemOrdered
         PictureUrl = pictureUrl;
     }
 
-    public static Result<CatalogItemOrdered> Create(CatalogItem.Entities.CatalogItem catalogItem, Name productName, Url pictureUrl)
+    public static Result<CatalogItemOrdered> Create(CatalogItem catalogItem, Name productName, Url pictureUrl)
     {
         var catalogItemOrdered = new CatalogItemOrdered(catalogItem.Id, productName, pictureUrl);
         return catalogItemOrdered;

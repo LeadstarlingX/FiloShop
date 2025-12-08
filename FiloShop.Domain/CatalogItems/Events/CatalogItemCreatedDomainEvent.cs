@@ -1,5 +1,5 @@
 ﻿using FiloShop.SharedKernel.Events;
 
-namespace FiloShop.Domain.CatalogItem.Events;
+namespace FiloShop.Domain.CatalogItems.Events;
 
 public sealed record CatalogItemCreatedDomainEvent(Guid CatalogItemId) : IDomainEvent;

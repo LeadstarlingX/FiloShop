@@ -20,7 +20,7 @@ COPY . .
 RUN dotnet publish FiloShop.Api/FiloShop.Api.csproj \
        -c $BUILD_CONFIGURATION \
        -o /app/publish \
-       --no-restore \
+#       --no-restore \
        /p:UseAppHost=false
 
 # ------- 3. Final stage -------

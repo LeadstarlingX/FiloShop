@@ -1,5 +1,5 @@
 ﻿using Ardalis.Specification;
-using FiloShop.Domain.CatalogItem.Entities;
+using FiloShop.Domain.CatalogItems.Entities;
 
 namespace FiloShop.Application.Specifications.Catalog;
 

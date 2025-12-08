@@ -7,9 +7,6 @@ internal sealed class DeleteCatalogItemCommandHandler : ICommandHandler<DeleteCa
 {
     public Task<Result> Handle(DeleteCatalogItemCommand request, CancellationToken cancellationToken)
     {
-        /*
-         * TODO
-         */
         throw new NotImplementedException();
     }
 }

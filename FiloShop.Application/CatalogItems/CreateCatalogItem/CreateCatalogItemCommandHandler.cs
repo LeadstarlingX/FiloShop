@@ -7,9 +7,6 @@ internal sealed class CreateCatalogItemCommandHandler : ICommandHandler<CreateCa
 {
     public Task<Result<Guid>> Handle(CreateCatalogItemCommand request, CancellationToken cancellationToken)
     {
-        /*
-         * TODO
-         */
         throw new NotImplementedException();
     }
 }
