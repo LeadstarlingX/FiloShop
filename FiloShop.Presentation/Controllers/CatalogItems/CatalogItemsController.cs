@@ -1,8 +1,8 @@
 ﻿using Asp.Versioning;
-using FiloShop.Application.CatalogItems.CreateCatalogItem;
-using FiloShop.Application.CatalogItems.DeleteCatalogItem;
-using FiloShop.Application.CatalogItems.GetCatalogItemById;
-using FiloShop.Application.CatalogItems.UpdateCatalogItem;
+using FiloShop.Application.CatalogItems.Commands.CreateCatalogItem;
+using FiloShop.Application.CatalogItems.Commands.DeleteCatalogItem;
+using FiloShop.Application.CatalogItems.Commands.UpdateCatalogItem;
+using FiloShop.Application.CatalogItems.Queries.GetCatalogItemById;
 using FiloShop.Presentation.Controllers.CatalogItems.Requests;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -48,9 +48,12 @@ public class CatalogItemsController : ControllerBase
 
     [HttpPost]
     public async Task<IActionResult> CreateCatalogItem(
-        CreateCatalogItemRequest request, CancellationToken cancellationToken)
+        [FromBody] CreateCatalogItemRequest request, 
+        [FromHeader(Name = "X-Idempotency-Key")] Guid idempotencyKey,
+        CancellationToken cancellationToken)
     {
         var command = new CreateCatalogItemCommand(
+            idempotencyKey,
             request.CatalogBrandId,
             request.CatalogTypeId ,
             request.Description,
@@ -68,9 +71,12 @@ public class CatalogItemsController : ControllerBase
     }
 
     [HttpDelete]
-    public async Task<IActionResult> DeleteCatalogItem(Guid catalogItemId, CancellationToken cancellationToken)
+    public async Task<IActionResult> DeleteCatalogItem(
+        Guid catalogItemId, 
+        [FromHeader(Name = "X-Idempotency-Key")] Guid idempotencyKey,
+        CancellationToken cancellationToken)
     {
-        var command = new DeleteCatalogItemCommand(catalogItemId);
+        var command = new DeleteCatalogItemCommand(idempotencyKey ,catalogItemId);
         
         var result = await _sender.Send(command, cancellationToken);
 
@@ -80,10 +86,13 @@ public class CatalogItemsController : ControllerBase
     }
 
     [HttpPut]
-    public async Task<IActionResult> UpdateCatalogItem(UpdateCatalogItemRequest request,
+    public async Task<IActionResult> UpdateCatalogItem(
+        [FromBody] UpdateCatalogItemRequest request,
+        [FromHeader(Name = "X-Idempotency-Key")] Guid idempotencyKey,
         CancellationToken cancellationToken)
     {
         var command = new UpdateCatalogItemCommand(
+            idempotencyKey,
             request.Id,
             request.CatalogBrandId,
             request.CatalogTypeId,

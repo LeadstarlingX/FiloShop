@@ -1,5 +1,5 @@
 ﻿using Asp.Versioning;
-using FiloShop.Application.CatalogBrands.GetCatalogBrands;
+using FiloShop.Application.CatalogBrands.Queries.GetCatalogBrands;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

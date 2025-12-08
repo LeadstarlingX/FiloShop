@@ -1,7 +1,7 @@
 ﻿using Asp.Versioning;
-using FiloShop.Application.Users.GetLoggedInUser;
-using FiloShop.Application.Users.LogInUser;
-using FiloShop.Application.Users.RegisterUser;
+using FiloShop.Application.Users.Commands.LogInUser;
+using FiloShop.Application.Users.Commands.RegisterUser;
+using FiloShop.Application.Users.Queries.GetLoggedInUser;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -35,10 +35,12 @@ public sealed class UsersController : ControllerBase
     [AllowAnonymous]
     [HttpPost("register")]
     public async Task<IActionResult> Register(
-        RegisterUserRequest request,
+        [FromBody] RegisterUserRequest request,
+        [FromHeader(Name = "X-Idempotency-Key")] Guid idempotencyKey,
         CancellationToken cancellationToken)
     {
         var command = new RegisterUserCommand(
+            idempotencyKey,
             request.Email,
             request.FirstName,
             request.LastName,
@@ -54,10 +56,13 @@ public sealed class UsersController : ControllerBase
     [AllowAnonymous]
     [HttpPost("login")]
     public async Task<IActionResult> LogIn(
-        LogInUserRequest request,
+        [FromBody] LogInUserRequest request,
+        [FromHeader(Name = "X-Idempotency-Key")] Guid idempotencyKey,
         CancellationToken cancellationToken)
     {
-        var command = new LogInUserCommand(request.Email, request.Password);
+        var command = new LogInUserCommand(
+            idempotencyKey,
+            request.Email, request.Password);
 
         var result = await _sender.Send(command, cancellationToken);
 

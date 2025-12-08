@@ -1,4 +1,6 @@
-﻿namespace FiloShop.SharedKernel.Idempotency;
+﻿using FiloShop.SharedKernel.CQRS.Commands;
+
+namespace FiloShop.SharedKernel.Idempotency;
 
 public sealed class IdempotencyRecord
 {

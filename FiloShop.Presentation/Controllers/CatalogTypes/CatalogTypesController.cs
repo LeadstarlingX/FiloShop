@@ -1,5 +1,5 @@
 ﻿using Asp.Versioning;
-using FiloShop.Application.CatalogTypes.GetCatalogTypes;
+using FiloShop.Application.CatalogTypes.Queries.GetCatalogTypes;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 

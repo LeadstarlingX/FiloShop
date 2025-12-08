@@ -18,21 +18,33 @@ public class UserRepository : RepositoryBase<User> , IUserRepository
 
     public Task<User?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
+        /*
+         * TODO: Implement
+         */
         throw new NotImplementedException();
     }
 
     public void Add(User user)
     {
+        /*
+         * TODO: Implement
+         */
         throw new NotImplementedException();
     }
 
     public Task<User?> GetByIdentityIdAsync(string identityId, CancellationToken cancellationToken = default)
     {
+        /*
+         * TODO: Implement
+         */
         throw new NotImplementedException();
     }
 
     public Task<HashSet<string>> GetPermissionsAsync(string identityId, CancellationToken cancellationToken = default)
     {
+        /*
+         * TODO: Implement
+         */
         throw new NotImplementedException();
     }
 }
