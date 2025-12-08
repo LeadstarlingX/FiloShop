@@ -8,6 +8,8 @@ public class IdempotencyRecordEntityConfiguration : IEntityTypeConfiguration<Ide
 {
     public void Configure(EntityTypeBuilder<IdempotencyRecord> builder)
     {
+        builder.HasKey(x => x.IdempotencyKey);
+        
         builder.Property(x => x.RequestName)
             .HasMaxLength(500)
             .IsRequired();

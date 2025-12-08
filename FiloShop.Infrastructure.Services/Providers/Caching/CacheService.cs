@@ -1,12 +1,11 @@
 ﻿using System.Buffers;
 using System.Text.Json;
 using FiloShop.SharedKernel.Interfaces;
-using FiloShop.SharedKernel.Settings;
 using Microsoft.Extensions.Caching.Distributed;
 
-namespace FiloShop.SharedKernel.Providers;
+namespace FiloShop.Infrastructure.Services.Providers.Caching;
 
-public sealed class CacheService : ICacheService
+internal sealed class CacheService : ICacheService
 {
     private readonly IDistributedCache _cache;
 

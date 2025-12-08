@@ -1,7 +1,14 @@
 ﻿using Dapper;
+using FiloShop.Domain.Baskets.IRepository;
+using FiloShop.Domain.CatalogBrands.IRepository;
+using FiloShop.Domain.CatalogItems.IRepository;
+using FiloShop.Domain.CatalogTypes.IRepository;
+using FiloShop.Domain.Orders.IRepository;
+using FiloShop.Domain.Users.IRepository;
 using FiloShop.Infrastructure.Persistence.AppDbContext;
 using FiloShop.Infrastructure.Persistence.Idempotency;
 using FiloShop.Infrastructure.Persistence.Providers.Data;
+using FiloShop.Infrastructure.Persistence.Repositories;
 using FiloShop.SharedKernel.Idempotency;
 using FiloShop.SharedKernel.Interfaces;
 using FiloShop.SharedKernel.Providers;
@@ -25,6 +32,13 @@ public static class DependencyInjection
         services.AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<ApplicationDbContext>());
         
         services.AddScoped<IIdempotencyStore, IdempotencyStore>();
+
+        services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IOrderRepository, OrderRepository>();
+        services.AddScoped<ICatalogTypeRepository, CatalogTypeRepository>();
+        services.AddScoped<ICatalogItemRepository, CatalogItemRepository>();
+        services.AddScoped<ICatalogBrandRepository, CatalogBrandRepository>();
+        services.AddScoped<IBasketRepository, BasketRepository>();
         
         services.AddDatabase(configuration);
         

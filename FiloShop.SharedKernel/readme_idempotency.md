@@ -205,17 +205,17 @@ CREATE INDEX ix_idempotency_records_created_at
 public DbSet<IdempotencyRecord> IdempotencyRecords => Set<IdempotencyRecord>();
 ```
 
-### Step 2: Register Services in `Program.cs`
+### Step 2: Register Services in `Infrastructure.Persistence/DependencyInjection`
 ```csharp
 // MediatR with Idempotency Behavior
-builder.Services.AddMediatR(cfg =>
+services.AddMediatR(cfg =>
 {
     cfg.RegisterServicesFromAssembly(typeof(Application.DependencyInjection).Assembly);
     cfg.AddOpenBehavior(typeof(IdempotentCommandBehavior<,>));
 });
 
 // Idempotency Store
-builder.Services.AddScoped<IIdempotencyStore, IdempotencyStore>();
+services.AddScoped<IIdempotencyStore, IdempotencyStore>();
 ```
 
 ### Step 3: Create Database Migration

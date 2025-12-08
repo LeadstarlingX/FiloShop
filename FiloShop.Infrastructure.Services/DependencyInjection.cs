@@ -1,6 +1,7 @@
 ﻿using FiloShop.Application.Authentication;
 using FiloShop.Infrastructure.Services.Authentication;
 using FiloShop.Infrastructure.Services.Authorization;
+using FiloShop.Infrastructure.Services.Providers.Outbox;
 using FiloShop.SharedKernel.Interfaces;
 using FiloShop.SharedKernel.Providers;
 using Microsoft.AspNetCore.Authentication;
@@ -9,6 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using Quartz;
 using AuthenticationOptions = FiloShop.Infrastructure.Services.Authentication.AuthenticationOptions;
 using AuthenticationService = FiloShop.Infrastructure.Services.Authentication.AuthenticationService;
 using IAuthenticationService = FiloShop.Application.Authentication.IAuthenticationService;
@@ -23,7 +25,8 @@ public static class DependencyInjection
         services.AddScoped<IUserContext, UserContext>();
 
         services.AddMyAuthentication(configuration)
-            .AddMyAuthorization();
+            .AddMyAuthorization()
+            .AddHttpContextAccessor();
         
         return services;
     }
@@ -69,6 +72,32 @@ public static class DependencyInjection
         services.AddTransient<IAuthorizationHandler, PermissionAuthorizationHandler>();
 
         services.AddTransient<IAuthorizationPolicyProvider, PermissionsAuthorizationPolicyProvider>();
+
+        return services;
+    }
+    
+    private static IServiceCollection AddMyCaching(this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        var connectionString = configuration.GetConnectionString("Cache") ??
+                               throw new ArgumentNullException(nameof(configuration));
+
+        services.AddStackExchangeRedisCache(options => options.Configuration = connectionString);
+
+        services.AddSingleton<ICacheService, CacheService>();
+
+        return services;
+    }
+    
+    
+    private static IServiceCollection AddMyBackgroundJobs(this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        services.Configure<OutboxOptions>(configuration.GetSection("Outbox"));
+
+        services.AddQuartz();
+
+        services.AddQuartzHostedService(options => options.WaitForJobsToComplete = true);
 
         return services;
     }
