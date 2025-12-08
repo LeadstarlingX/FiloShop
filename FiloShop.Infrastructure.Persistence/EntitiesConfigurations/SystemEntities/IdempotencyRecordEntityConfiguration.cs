@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace FiloShop.Infrastructure.Persistence.EntitiesConfigurations;
+namespace FiloShop.Infrastructure.Persistence.EntitiesConfigurations.SystemEntities;
 
 public class IdempotencyRecordEntityConfiguration : IEntityTypeConfiguration<IdempotencyRecord>
 {

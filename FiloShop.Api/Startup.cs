@@ -3,6 +3,7 @@ using FiloShop.Api.Extensions;
 using FiloShop.Api.Middleware;
 using FiloShop.Application;
 using FiloShop.Infrastructure.Persistence;
+using FiloShop.Infrastructure.Persistence.DataSeeder;
 using FiloShop.Infrastructure.Services;
 using FiloShop.Presentation;
 using HealthChecks.UI.Client;
@@ -46,8 +47,9 @@ public class Startup
                 options.SwaggerEndpoint(url, name);
             }
         });
+        app.ApplyMigrations();
         
-        // app.SeedData();
+        app.SeedData();
 
         if (env.IsDevelopment())
         {
@@ -55,8 +57,6 @@ public class Startup
             
         }
         
-        app.ApplyMigrations();
-
         app.UseSerilogRequestLogging();
 
         app.UseMiddleware<RequestContextLoggingMiddleware>();
@@ -77,10 +77,10 @@ public class Startup
         {
             endpoints.MapControllers();
 
-            endpoints.MapHealthChecks("/health", new HealthCheckOptions
-            {
-                ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
-            });
+            // endpoints.MapHealthChecks("/health", new HealthCheckOptions
+            // {
+            //     ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+            // });
         });
     }
 }
