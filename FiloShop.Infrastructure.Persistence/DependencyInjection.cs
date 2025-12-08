@@ -7,6 +7,7 @@ using FiloShop.Domain.Orders.IRepository;
 using FiloShop.Domain.Users.IRepository;
 using FiloShop.Infrastructure.Persistence.AppDbContext;
 using FiloShop.Infrastructure.Persistence.Idempotency;
+using FiloShop.Infrastructure.Persistence.Interceptors;
 using FiloShop.Infrastructure.Persistence.Providers.Data;
 using FiloShop.Infrastructure.Persistence.Repositories;
 using FiloShop.SharedKernel.Idempotency;
@@ -48,8 +49,15 @@ public static class DependencyInjection
     
     private static IServiceCollection AddDatabase(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddDbContext<ApplicationDbContext>(options =>
-            options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
+        services.AddSingleton<AuditableEntityInterceptor>();
+        
+        services.AddDbContext<ApplicationDbContext>((serviceProvider, options) =>
+        {
+            var interceptor = serviceProvider.GetRequiredService<AuditableEntityInterceptor>();
+            
+            options.UseNpgsql(configuration.GetConnectionString("DefaultConnection"))
+                   .AddInterceptors(interceptor);
+        });
 
         services.AddSingleton<ISqlConnectionFactory>(_ =>
             new SqlConnectionFactory(configuration.GetConnectionString("DefaultConnection")!));

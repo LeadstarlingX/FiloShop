@@ -49,7 +49,7 @@ public class Startup
         });
         app.ApplyMigrations();
         
-        app.SeedData();
+        // app.SeedData();
 
         if (env.IsDevelopment())
         {

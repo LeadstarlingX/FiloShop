@@ -10,33 +10,38 @@ namespace FiloShop.Infrastructure.Persistence.DataSeeder;
 // Seed Data Records
 internal sealed record UserSeedData(
     Guid Id,
-    string FirstName_Value,
-    string LastName_Value,
-    string Email_Value,
+    string FirstName,
+    string LastName,
+    string Email,
     string IdentityId,
-    bool IsActive);
+    bool IsActive,
+    DateTime CreatedAt);
 
 internal sealed record CatalogBrandSeedData(
     Guid Id,
-    string Brand_Value);
+    string Brand,
+    DateTime CreatedAt);
 
 internal sealed record CatalogTypeSeedData(
     Guid Id,
-    string Type_Value);
+    string Type,
+    DateTime CreatedAt);
 
 internal sealed record CatalogItemSeedData(
     Guid Id,
-    string Name_Value,
-    string Description_Value,
+    string Name,
+    string Description,
     decimal Price_Amount,
     string Price_Currency,
-    string PictureUri_Value,
+    string PictureUri,
     Guid CatalogTypeId,
-    Guid CatalogBrandId);
+    Guid CatalogBrandId,
+    DateTime CreatedAt);
 
 internal sealed record BasketSeedData(
     Guid Id,
-    Guid UserId);
+    Guid UserId,
+    DateTime CreatedAt);
 
 internal sealed record BasketItemSeedData(
     Guid Id,
@@ -44,7 +49,8 @@ internal sealed record BasketItemSeedData(
     string UnitPrice_Currency,
     int Quantity,
     Guid CatalogItemId,
-    Guid BasketId);
+    Guid BasketId,
+    DateTime CreatedAt);
 
 public static class DataSeeder
 {
@@ -99,14 +105,15 @@ public static class DataSeeder
                 faker.Name.LastName(),
                 faker.Internet.Email(),
                 string.Empty,
-                true
+                true,
+                DateTime.UtcNow
             ));
         }
 
         const string sql = """
                            INSERT INTO public."User"
-                           ("Id", "FirstName_Value", "LastName_Value", "Email_Value", "IdentityId", "IsActive")
-                           VALUES(@Id, @FirstName_Value, @LastName_Value, @Email_Value, @IdentityId, @IsActive);
+                           ("Id", "FirstName", "LastName", "Email", "IdentityId", "IsActive", "CreatedAt")
+                           VALUES(@Id, @FirstName, @LastName, @Email, @IdentityId, @IsActive, @CreatedAt);
                            """;
 
         await connection.ExecuteAsync(sql, users);
@@ -126,13 +133,13 @@ public static class DataSeeder
             var newId = Guid.NewGuid();
             brandIds.Add(newId);
 
-            brands.Add(new CatalogBrandSeedData(newId, brandName));
+            brands.Add(new CatalogBrandSeedData(newId, brandName, DateTime.UtcNow));
         }
 
         const string sql = """
                            INSERT INTO public."CatalogBrand"
-                           ("Id", "Brand_Value")
-                           VALUES(@Id, @Brand_Value);
+                           ("Id", "Brand", "CreatedAt")
+                           VALUES(@Id, @Brand, @CreatedAt);
                            """;
 
         await connection.ExecuteAsync(sql, brands);
@@ -151,13 +158,13 @@ public static class DataSeeder
             var newId = Guid.NewGuid();
             typeIds.Add(newId);
 
-            types.Add(new CatalogTypeSeedData(newId, typeName));
+            types.Add(new CatalogTypeSeedData(newId, typeName, DateTime.UtcNow));
         }
 
         const string sql = """
                            INSERT INTO public."CatalogType"
-                           ("Id", "Type_Value")
-                           VALUES(@Id, @Type_Value);
+                           ("Id", "Type", "CreatedAt")
+                           VALUES(@Id, @Type, @CreatedAt);
                            """;
 
         await connection.ExecuteAsync(sql, types);
@@ -183,14 +190,15 @@ public static class DataSeeder
                 "USD",
                 faker.Image.PicsumUrl(),
                 faker.PickRandom(typeIds),
-                faker.PickRandom(brandIds)
+                faker.PickRandom(brandIds),
+                DateTime.UtcNow
             ));
         }
 
         const string sql = """
                            INSERT INTO public."CatalogItem"
-                           ("Id", "Name_Value", "Description_Value", "Price_Amount", "Price_Currency", "PictureUri_Value", "CatalogTypeId", "CatalogBrandId")
-                           VALUES(@Id, @Name_Value, @Description_Value, @Price_Amount, @Price_Currency, @PictureUri_Value, @CatalogTypeId, @CatalogBrandId);
+                           ("Id", "Name", "Description", "Price_Amount", "Price_Currency", "PictureUri", "CatalogTypeId", "CatalogBrandId", "CreatedAt")
+                           VALUES(@Id, @Name, @Description, @Price_Amount, @Price_Currency, @PictureUri, @CatalogTypeId, @CatalogBrandId, @CreatedAt);
                            """;
 
         await connection.ExecuteAsync(sql, items);
@@ -208,13 +216,13 @@ public static class DataSeeder
             var newId = Guid.NewGuid();
             basketIds.Add(newId);
 
-            baskets.Add(new BasketSeedData(newId, userId));
+            baskets.Add(new BasketSeedData(newId, userId, DateTime.UtcNow));
         }
 
         const string sql = """
                            INSERT INTO public."Basket"
-                           ("Id", "UserId")
-                           VALUES(@Id, @UserId);
+                           ("Id", "UserId", "CreatedAt")
+                           VALUES(@Id, @UserId, @CreatedAt);
                            """;
 
         await connection.ExecuteAsync(sql, baskets);
@@ -241,15 +249,16 @@ public static class DataSeeder
                     "USD",
                     faker.Random.Int(1, 5),
                     faker.PickRandom(catalogItemIds),
-                    basketId
+                    basketId,
+                    DateTime.UtcNow
                 ));
             }
         }
 
         const string sql = """
                            INSERT INTO public."BasketItem"
-                           ("Id", "UnitPrice_Amount", "UnitPrice_Currency", "Quantity", "CatalogItemId", "BasketId")
-                           VALUES(@Id, @UnitPrice_Amount, @UnitPrice_Currency, @Quantity, @CatalogItemId, @BasketId);
+                           ("Id", "UnitPrice_Amount", "UnitPrice_Currency", "Quantity", "CatalogItemId", "BasketId", "CreatedAt")
+                           VALUES(@Id, @UnitPrice_Amount, @UnitPrice_Currency, @Quantity, @CatalogItemId, @BasketId, @CreatedAt);
                            """;
 
         await connection.ExecuteAsync(sql, basketItems);
