@@ -1,0 +1,29 @@
+# Ignore build artifacts
+**/bin
+**/obj
+**/out
+
+# Ignore IDE files
+**/.vs
+**/.vscode
+**/.idea
+**/*.user
+**/*.suo
+
+# Ignore Docker/Git metadata
+**/.git
+**/.gitignore
+**/.dockerignore
+
+# Ignore test results
+**/TestResults
+**/*.trx
+
+# Ignore container data
+**/.containers
+
+# Ignore NuGet packages (optional - they'll be restored anyway)
+**/packages
+
+# Keep Dockerfiles
+!**/Dockerfile
