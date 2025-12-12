@@ -1,9 +1,10 @@
-﻿using System.Text.Json;
-using FiloShop.SharedKernel.CQRS.Commands;
+﻿using FiloShop.SharedKernel.CQRS.Commands;
 using FiloShop.SharedKernel.Idempotency;
 using FiloShop.SharedKernel.Results;
 using MediatR;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace FiloShop.SharedKernel.Behaviors;
 
@@ -39,7 +40,8 @@ public sealed class IdempotentCommandBehavior<TRequest, TResponse>
                 "Idempotency: Request {RequestName} with key {IdempotencyKey} already processed. Returning cached response",
                 requestName, idempotencyKey);
 
-            return JsonSerializer.Deserialize<TResponse>(cachedRecord.SerializedResponse)!;
+            return JsonConvert.DeserializeObject<TResponse>(
+                cachedRecord.SerializedResponse)!;
         }
 
         _logger.LogInformation(
@@ -51,7 +53,7 @@ public sealed class IdempotentCommandBehavior<TRequest, TResponse>
         var record = IdempotencyRecord.Create(
             idempotencyKey,
             requestName,
-            JsonSerializer.Serialize(response));
+            JsonConvert.SerializeObject(response));
 
         await _store.SaveAsync(record, cancellationToken);
 

@@ -57,11 +57,9 @@ public sealed class UsersController : ControllerBase
     [HttpPost("login")]
     public async Task<IActionResult> LogIn(
         [FromBody] LogInUserRequest request,
-        [FromHeader(Name = "X-Idempotency-Key")] Guid idempotencyKey,
         CancellationToken cancellationToken)
     {
         var command = new LogInUserCommand(
-            idempotencyKey,
             request.Email, request.Password);
 
         var result = await _sender.Send(command, cancellationToken);

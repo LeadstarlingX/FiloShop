@@ -1,6 +1,6 @@
 # FiloShop 🛍️
 
-A production-ready e-commerce platform built with **.NET 9.0**, implementing **Domain-Driven Design (DDD)**, **CQRS**, and **Clean Architecture** principles.
+A (nearly) production-ready e-commerce platform built with **.NET 9.0**, implementing **Domain-Driven Design (DDD)**, **CQRS**, and **Clean Architecture** principles.
 
 ## 🏗️ Architecture
 
@@ -19,7 +19,7 @@ FiloShop follows a **layered architecture** with clear separation of concerns:
 │  FiloShop.Infrastructure.Persistence    │  ← Database & Repositories
 │  FiloShop.Infrastructure.Services       │  ← External Services
 ├─────────────────────────────────────────┤
-│      FiloShop.SharedKernel             │  ← Reusable Patterns
+│      FiloShop.SharedKernel              │  ← Reusable Patterns
 └─────────────────────────────────────────┘
 ```
 
