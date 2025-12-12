@@ -1,7 +1,7 @@
 ﻿using Ardalis.Specification;
 using FiloShop.Domain.CatalogItems.Entities;
 
-namespace FiloShop.Application.Specifications.Catalog;
+namespace FiloShop.Application.Specifications.CatalogItems;
 
 public class CatalogItemsSpecification : Specification<CatalogItem>
 {

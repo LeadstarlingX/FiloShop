@@ -16,7 +16,6 @@
       <Folder Include="Baskets\ValueObjects\" />
       <Folder Include="CatalogBrands\Errors\" />
       <Folder Include="CatalogBrands\Services\" />
-      <Folder Include="CatalogItems\Errors\" />
       <Folder Include="CatalogItems\Services\" />
       <Folder Include="CatalogTypes\Errors\" />
       <Folder Include="CatalogTypes\Services\" />

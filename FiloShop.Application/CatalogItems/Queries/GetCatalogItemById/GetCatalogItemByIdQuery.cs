@@ -2,7 +2,8 @@
 
 namespace FiloShop.Application.CatalogItems.Queries.GetCatalogItemById;
 
-public class GetCatalogItemByIdQuery(Guid CatalogItemId) : IQuery<CatalogItemResponse>
+public record GetCatalogItemByIdQuery(Guid CatalogItemId) : ICachedQuery<CatalogItemResponse>
 {
-    
+    public string CacheKey => $"catalog-item-{CatalogItemId}";
+    public TimeSpan? Expiration => null;
 }

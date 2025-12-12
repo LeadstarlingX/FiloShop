@@ -3,6 +3,7 @@ using FiloShop.Application.CatalogItems.Commands.CreateCatalogItem;
 using FiloShop.Application.CatalogItems.Commands.DeleteCatalogItem;
 using FiloShop.Application.CatalogItems.Commands.UpdateCatalogItem;
 using FiloShop.Application.CatalogItems.Queries.GetCatalogItemById;
+using FiloShop.Application.CatalogItems.Queries.GetCatalogItemListPaged;
 using FiloShop.Presentation.Controllers.CatalogItems.Requests;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -35,10 +36,12 @@ public class CatalogItemsController : ControllerBase
     }
 
 
-    [HttpGet]
-    public async Task<IActionResult> CatalogItemListPaged(Guid catalogItemId, CancellationToken cancellationToken)
+    [HttpGet("id:guid")]
+    public async Task<IActionResult> GetCatalogItemListPaged(
+        int? pageSize, int? pageIndex, Guid? catalogBrandId, Guid? catalogTypeId
+        , CancellationToken cancellationToken)
     {
-        var query = new GetCatalogItemByIdQuery(catalogItemId);
+        var query = new GetCatalogItemListPagedQuery(pageSize, pageIndex, catalogBrandId, catalogTypeId);
         
         var result = await _sender.Send(query, cancellationToken);
     

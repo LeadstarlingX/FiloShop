@@ -47,4 +47,37 @@ public sealed class CatalogItem : BaseEntity, IAggregateRoot
     // public CatalogBrand? CatalogBrand { get; private set; }
 
     #endregion
+
+    
+    
+    
+    public void UpdateName(Name name)
+    {
+        Name = name;
+    }
+
+    public void UpdateDescription(Description description)
+    {
+        Description = description;
+    }
+
+    public void UpdatePrice(Money price)
+    {
+        Price = price;
+    }
+    public void UpdatePictureUri(Url pictureUri)
+    {
+        PictureUri = pictureUri;
+    }
+
+    public void UpdateCatalogTypeId(Guid catalogTypeId)
+    {
+        CatalogTypeId = catalogTypeId;
+    }
+
+    public void UpdateCatalogBrandId(Guid catalogBrandId)
+    {
+        CatalogBrandId = catalogBrandId;
+    }
+    
 }

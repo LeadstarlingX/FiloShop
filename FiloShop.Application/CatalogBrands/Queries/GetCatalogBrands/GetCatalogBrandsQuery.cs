@@ -2,6 +2,8 @@
 
 namespace FiloShop.Application.CatalogBrands.Queries.GetCatalogBrands;
 
-public record GetCatalogBrandsQuery : IQuery<IReadOnlyList<CatalogBrandResponse>>
+public record GetCatalogBrandsQuery : ICachedQuery<IReadOnlyList<CatalogBrandResponse>>
 {
+    public string CacheKey => $"brands";
+    public TimeSpan? Expiration  => null;
 }

@@ -15,7 +15,6 @@
       <Folder Include="CatalogBrands\Commands\" />
       <Folder Include="CatalogBrands\Queries\" />
       <Folder Include="CatalogItems\Commands\" />
-      <Folder Include="CatalogItems\Queries\" />
       <Folder Include="CatalogTypes\Commands\" />
       <Folder Include="CatalogTypes\Queries\" />
       <Folder Include="Users\Commands\" />

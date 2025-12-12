@@ -166,7 +166,7 @@ namespace FiloShop.Infrastructure.Persistence.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<Guid?>("OrderId")
+                    b.Property<Guid>("OrderId")
                         .HasColumnType("uuid");
 
                     b.Property<Guid?>("OrderId1")
@@ -475,7 +475,9 @@ namespace FiloShop.Infrastructure.Persistence.Migrations
                 {
                     b.HasOne("FiloShop.Domain.Orders.Entities.Order", null)
                         .WithMany()
-                        .HasForeignKey("OrderId");
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("FiloShop.Domain.Orders.Entities.Order", null)
                         .WithMany("OrderItems")

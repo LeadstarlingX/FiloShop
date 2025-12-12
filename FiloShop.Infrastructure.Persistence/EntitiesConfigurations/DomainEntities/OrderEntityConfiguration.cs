@@ -26,6 +26,6 @@ public class OrderEntityConfiguration : IEntityTypeConfiguration<Order>
         // Navigation to OrderItems (child entities)
         builder.HasMany<OrderItem>()
             .WithOne()
-            .HasForeignKey("OrderId");
+            .HasForeignKey(o => o.OrderId);
     }
 }
