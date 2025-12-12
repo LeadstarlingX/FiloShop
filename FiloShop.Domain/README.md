@@ -175,6 +175,9 @@ order.AddItem(catalogItem, quantity);
 - **Value Objects** - Always use factory methods (e.g., `Money.Create()`)
 - **Validation** - Happens in value object constructors and entity methods
 
+## 📚 Deep Dive Guides
+- [Domain Events Guide](./readme_domain_events.md)
+
 ---
 
 This layer is **stable** and should only change when business requirements evolve.

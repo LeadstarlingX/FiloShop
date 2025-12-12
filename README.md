@@ -1,211 +1,53 @@
 # FiloShop 🛍️
 
-A (nearly) production-ready e-commerce platform built with **.NET 9.0**, implementing **Domain-Driven Design (DDD)**, **CQRS**, and **Clean Architecture** principles.
+A learning-focused, "nearly" production-ready e-commerce platform built with **.NET 9**, implementing **DDD**, **CQRS**, and **Clean Architecture**.
+
+> **Status**: 🚧 Work in Progress (Documentation & Structure Phase)
 
 ## 🏗️ Architecture
+The system uses a **Layered Architecture** with strict dependency rules:
 
-FiloShop follows a **layered architecture** with clear separation of concerns:
-
-```
-┌─────────────────────────────────────────┐
-│         FiloShop.Api                    │  ← HTTP Entry Point
-├─────────────────────────────────────────┤
-│      FiloShop.Presentation              │  ← Controllers & DTOs
-├─────────────────────────────────────────┤
-│      FiloShop.Application               │  ← CQRS Handlers & Validation
-├─────────────────────────────────────────┤
-│         FiloShop.Domain                 │  ← Business Logic & Entities
-├─────────────────────────────────────────┤
-│  FiloShop.Infrastructure.Persistence    │  ← Database & Repositories
-│  FiloShop.Infrastructure.Services       │  ← External Services
-├─────────────────────────────────────────┤
-│      FiloShop.SharedKernel              │  ← Reusable Patterns
-└─────────────────────────────────────────┘
-```
-
-## 📦 Project Layers
-
-| Layer | Purpose | Documentation |
-|-------|---------|---------------|
-| **SharedKernel** | Reusable DDD building blocks (CQRS, Idempotency, Result pattern) | [README](./FiloShop.SharedKernel/README.md) |
-| **Domain** | Core business logic, aggregates, value objects, domain events | [README](./FiloShop.Domain/README.md) |
-| **Application** | Use cases, commands, queries, validation | [README](./FiloShop.Application/README.md) |
-| **Presentation** | Controllers, DTOs, API contracts | [README](./FiloShop.Presentation/README.md) |
-| **Api** | HTTP pipeline, middleware, startup configuration | [README](./FiloShop.Api/README.md) |
-| **Infrastructure.Persistence** | EF Core, repositories, database migrations | [README](./FiloShop.Infrastructure.Persistence/README.md) |
-| **Infrastructure.Services** | Authentication (Keycloak), caching (Redis), background jobs | [README](./FiloShop.Infrastructure.Services/README.md) |
-
-## ✨ Key Features
-
-### 🎯 Domain-Driven Design
-- **6 Aggregates**: User, Order, CatalogItem, Basket, CatalogBrand, CatalogType
-- **Value Objects**: Money, Address, Email, etc.
-- **Domain Events**: Async communication via Outbox pattern
-
-### 🔁 CQRS & MediatR
-- **Commands** for writes (with idempotency)
-- **Queries** for reads (with caching)
-- **Pipeline Behaviors**: Validation, logging, unit of work
-
-### 🔒 Idempotency
-- Prevents duplicate command execution
-- Client-provided or auto-generated keys
-- PostgreSQL-backed storage
-
-### 📤 Outbox Pattern
-- Reliable event publishing
-- Transactional consistency
-- Background processing with Quartz.NET
-
-### 🔐 Authentication & Authorization
-- **Keycloak** integration
-- JWT Bearer tokens
-- Permission-based access control
-
-### 💾 Persistence
-- **PostgreSQL** database
-- **EF Core 9.0** with interceptors
-- Automatic audit fields (`CreatedAt`, `UpdatedAt`)
-- Comprehensive entity configurations
-
-### 📊 Observability
-- **Serilog** logging
-- **Seq** log aggregation
-- Structured logging throughout
-
-### ⚡ Caching
-- **Redis** for distributed caching
-- Automatic query result caching
-- Configurable expiration
+| Layer | Responsibility | Key Design Decisions |
+|-------|----------------|----------------------|
+| **[Api](./FiloShop.Api/README.md)** | HTTP Entry Point | Thin translation layer, no business logic. |
+| **[Presentation](./FiloShop.Presentation/README.md)** | Controllers/DTOs | Separated to allow swapping hosting models. |
+| **[Application](./FiloShop.Application/README.md)** | Use Cases (CQRS) | Orchestrates domain; uses MediatR behaviors. |
+| **[Domain](./FiloShop.Domain/README.md)** | Business Logic | **Rich Domain Model**. Pure C#, no dependencies. |
+| **[Infrastructure](./FiloShop.Infrastructure.Persistence/README.md)** | Persistence | EF Core + Dapper. Only layer knowing SQL. |
+| **[SharedKernel](./FiloShop.SharedKernel/README.md)** | Building Blocks | "Batteries-included" base classes & patterns. |
 
 ## 🚀 Getting Started
 
 ### Prerequisites
-- **.NET 9.0 SDK**
-- **Docker Desktop** (for local development)
+- **Docker Desktop** (Required)
+- **.NET 9.0 SDK** (Optional, for fast local dev)
 
-### Run with Docker Compose
-
-```powershell
-# Start all services
-docker compose up --build
-
-# Access the API
-http://localhost:5000/swagger
-```
-
-### Services
-- **API**: http://localhost:5000
-- **PostgreSQL**: localhost:5433
-- **Redis**: localhost:6380
-- **Keycloak**: http://localhost:8080
-- **Seq**: http://localhost:5341
-
-### Run Migrations
+### 🐳 Run with Docker (Recommended)
+This spins up the entire stack: API, Postgres, Redis, Keycloak, Seq.
 
 ```powershell
-cd FiloShop.Api
-dotnet ef migrations add MigrationName -p ../FiloShop.Infrastructure.Persistence -s .
-dotnet ef database update -p ../FiloShop.Infrastructure.Persistence -s .
+docker compose up -d --build
 ```
 
-## 🧪 Testing
+### 🔗 Service Endpoints
+| Service | Local URL | Internal Docker Port |
+|---------|-----------|----------------------|
+| **Swagger API** | [http://localhost:8000/swagger](http://localhost:8000/swagger) | 8080 |
+| **PostgreSQL** | `localhost:5433` | 5432 |
+| **Redis** | `localhost:6379` | 6379 |
+| **Keycloak** | [http://localhost:8001](http://localhost:8001) | 8080 |
+| **Seq Logs** | [http://localhost:8081](http://localhost:8081) | 80 |
 
-```powershell
-# Unit Tests
-dotnet test FiloShop.Domain.UnitTests
+### 🛠️ Manual Setup Notes
+1.  **Migrations**: Applied automatically on startup. No action needed.
+2.  **Keycloak**: Requires manual realm setup. See [Keycloak Setup Guide](./readme_keycloak_setup.md).
+3.  **Tests**: See [Testing Guide](./readme_testing.md).
 
-# Integration Tests
-dotnet test FiloShop.IntegrationTests
-
-# Architecture Tests
-dotnet test FiloShop.ArchitectureTests
-
-# Naming Tests
-dotnet test FiloShop.NamingTests
-```
-
-## 📚 Documentation
-
-Each layer has detailed documentation. Start here:
-
-- **[SharedKernel](./FiloShop.SharedKernel/README.md)** - Core patterns and reusable components
-- **[Domain](./FiloShop.Domain/README.md)** - Business logic and aggregates
-- **[API](./FiloShop.Api/README.md)** - HTTP endpoints and middleware
-
-## 📖 Technical Deep-Dive Guides
-
-Comprehensive guides for advanced topics:
-
-| Guide | Topic | Location       |
-|-------|-------|----------------|
-| **[Idempotency](./FiloShop.SharedKernel/readme_idempotency.md)** | Prevent duplicate command execution | SharedKernel   |
-| **[Outbox Pattern](./FiloShop.SharedKernel/readme_outbox.md)** | Reliable event publishing | SharedKernel   |
-| **[Domain Events](./FiloShop.SharedKernel/readme_domain_events.md)** | Event-driven architecture | Domain         |
-| **[Migrations](./FiloShop.Infrastructure.Persistence/readme_migrations.md)** | Database schema evolution | Infrastructure |
-| **[Entity Configurations](./FiloShop.Infrastructure.Persistence/readme_entity_configurations.md)** | EF Core Fluent API | Infrastructure |
-| **[Testing Strategy](./readme_testing.md)** | Unit, integration & architecture tests | Root           |
-| **[Keycloak Setup](./readme_keycloak_setup.md)** | Authentication & authorization | Root           |
-
-## 🛠️ Tech Stack
-
-### Core
-- **.NET 9.0** - Runtime & SDK
-- **ASP.NET Core** - Web framework
-- **Entity Framework Core 9.0** - ORM
-
-### Patterns & Libraries
-- **MediatR** - CQRS implementation
-- **FluentValidation** - Request validation
-- **Dapper** - High-performance data seeding
-
-### Infrastructure
-- **PostgreSQL 16** - Primary database
-- **Redis 7** - Distributed cache
-- **Keycloak** - Identity & access management
-- **Seq** - Centralized logging
-- **Quartz.NET** - Background job scheduling
-
-### DevOps
-- **Docker** & **Docker Compose**
-- **Multi-stage Dockerfiles** for optimized builds
-
-## 🎯 Design Principles
-
-✅ **SOLID** principles  
-✅ **DDD** tactical patterns  
-✅ **Clean Architecture** with dependency inversion  
-✅ **CQRS** for read/write separation  
-✅ **Event-Driven** with domain events  
-✅ **Persistence Ignorance** in domain layer  
-
-## 📁 Project Structure
-
-```
-FiloShop/
-├── FiloShop.Api/                    # HTTP Entry Point
-├── FiloShop.Presentation/           # Controllers
-├── FiloShop.Application/            # Use Cases
-├── FiloShop.Domain/                 # Business Logic
-├── FiloShop.Infrastructure.Persistence/  # Database
-├── FiloShop.Infrastructure.Services/     # External Services
-├── FiloShop.SharedKernel/           # Reusable Patterns
-├── FiloShop.ArchitectureTests/      # Enforce Boundaries
-├── FiloShop.Domain.UnitTests/       # Domain Tests
-├── FiloShop.IntegrationTests/       # API Tests
-├── FiloShop.NamingTests/            # Convention Tests
-├── docker-compose.yaml              # Full Stack Orchestration
-└── README.md                        # This File
-```
+## 📚 Technical Deep Dives
+- **[SharedKernel Architecture](./FiloShop.SharedKernel/README.md)** - The "Why" behind the patterns.
+- **[Domain Events](./FiloShop.Domain/readme_domain_events.md)** - Strict rules for side effects.
+- **[Entity Configuration](./FiloShop.Infrastructure.Persistence/readme_entity_configurations.md)** - EF Core guidelines.
+- **[Testing Strategy](./readme_testing.md)** - TUnit & Testcontainers setup.
 
 ## 🤝 Contributing
-
-See [CONTRIBUTION.md](./CONTRIBUTION.md) for guidelines.
-
-## 📄 License
-
-This project is licensed under the MIT License. See [LICENSE.md](./LICENSE.md) for details.
-
----
-
-**Built with ❤️ using Domain-Driven Design and Clean Architecture**
+Please read the [CONTRIBUTION.md](./CONTRIBUTION.md) carefully. We enforce strict architectural boundaries.

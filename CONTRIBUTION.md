@@ -324,7 +324,20 @@ public class CreateOrderCommandHandler
 
 ### Infrastructure Layer
 
-#### Entity Configurations
+### Infrastructure Layer
+
+#### Entity Configurations Policy
+> [!IMPORTANT]
+> **Strict Rule**: Never use Data Annotations (`[Key]`, `[Required]`, `[Table]`) in the Domain Layer. We follow strict Persistence Ignorance.
+
+All database mappings must be defined in `IEntityTypeConfiguration<T>` classes in the Infrastructure project.
+
+**Do NOT**:
+- Add `[Key]` to your Entities.
+- Rename columns manually (e.g., `.HasColumnName("user_id")`) - rely on conventions.
+- Forget to `IsRequired()` for strings (defaults as nullable without it).
+
+See the [Entity Configurations Deep Dive](./FiloShop.Infrastructure.Persistence/readme_entity_configurations.md) for the mandatory patterns.
 
 ```csharp
 public class OrderEntityConfiguration : IEntityTypeConfiguration<Order>
@@ -333,7 +346,7 @@ public class OrderEntityConfiguration : IEntityTypeConfiguration<Order>
     {
         builder.HasKey(o => o.Id);
         
-        // Value objects
+        // Correct usage of ComplexProperty for Value Objects (EF Core 8+)
         builder.ComplexProperty(o => o.ShipToAddress, addressBuilder =>
         {
             addressBuilder.Property(a => a.Street).IsRequired();
@@ -341,7 +354,7 @@ public class OrderEntityConfiguration : IEntityTypeConfiguration<Order>
             addressBuilder.Property(a => a.Country).IsRequired();
         });
         
-        // Relationships
+        // Correct Relationship mapping
         builder.HasMany<OrderItem>()
             .WithOne()
             .HasForeignKey("OrderId");
@@ -544,7 +557,7 @@ public Order Create(...)
 
 ## 📚 Resources
 
-- [Domain Events Guide](./FiloShop.SharedKernel/readme_domain_events.md)
+- [Domain Events Guide](./FiloShop.Domain/readme_domain_events.md)
 - [Idempotency Guide](./FiloShop.SharedKernel/readme_idempotency.md)
 - [Testing Strategy](./readme_testing.md)
 - [Migrations Guide](./FiloShop.Infrastructure.Persistence/readme_migrations.md)

@@ -19,9 +19,6 @@ FiloShop.Presentation/
 │   ├── Users/
 │   ├── Orders/
 │   └── Baskets/
-├── DTOs/
-├── Filters/
-└── Extensions/
 ```
 
 ## 🎨 Key Patterns

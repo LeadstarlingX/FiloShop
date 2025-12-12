@@ -1,168 +1,60 @@
 # FiloShop.API
 
-The **API** layer is the entry point for HTTP requests. It handles routing, request/response transformation, and delegates business logic to the Application layer via MediatR.
+## 🎯 Architecture & Responsibilities
+The **API** layer is the entry point for the system. It is a thin translation layer that maps HTTP requests to Application Commands/Queries.
 
-## 🎯 Responsibilities
+**Key Design Decision**: Controllers contain **zero business logic**. Their only job is to:
+1.  Accept HTTP Request
+2.  Dispatch specific Command/Query via MediatR
+3.  Map Result to HTTP Status Code (200 OK, 400 Bad Request, etc.)
 
-- **HTTP Endpoints** - RESTful API controllers
-- **Request Validation** - Basic model binding
-- **API Versioning** - Multiple API versions support
-- **Middleware** - Exception handling, logging
-- **Swagger/OpenAPI** - API documentation
-- **Startup Configuration** - DI container setup
+## 📂 Structure
 
-## 📁 Structure
+Controllers are organized by feature, with a strict `Requests` folder for input contracts (DTOs).
 
 ```
 FiloShop.API/
-├── Controllers/
-│   ├── CatalogItems/
+├── Controllers/            # (Reference to FiloShop.Presentation)
 │   ├── Users/
-│   ├── Orders/
-│   └── Baskets/
-├── Extensions/
-│   └── ApplicationBuilderExtensions.cs
-├── Middleware/
-├── Program.cs
-├── Startup.cs
-└── appsettings.json
+│   │   ├── Requests/
+│   │   │   ├── RegisterUserRequest.cs
+│   │   │   └── LoginRequest.cs
+│   │   └── UsersController.cs
+│   └── ...
 ```
 
-## 🚀 Key Features
+## 🔌 Middleware Pipeline
+The implementation uses a standard ASP.NET Core pipeline enriched with system-wide concerns:
 
-### API Versioning
-- Supports multiple API versions
-- URL-based versioning (`/api/v1/...`)
-- Swagger UI for all versions
+1.  **Global Exception Handler**: Converts exceptions to standard ProblemDetails JSON.
+2.  **Serilog Request Logging**: Logs high-level request details (Method, Path, Duration) to Seq.
+3.  **Authentication**: Validates JWT/Bearer tokens against Keycloak.
+4.  **Authorization**: Checks user permissions/roles.
+5.  **Swagger**: Generates OpenAPI definitions for the frontend.
+
+## 🗺️ Key Features
 
 ### Standardized Responses
-All endpoints return `ApiResponse<T>`:
-```csharp
-{
-  "data": { ... },
-  "isSuccess": true,
-  "error": null
-}
-```
+All API endpoints return a consistent envelope or ProblemDetails structure, ensuring the frontend always knows how to parse success vs. failure.
 
 ### Idempotency Support
-Commands accept `X-Idempotency-Key` header:
-```csharp
-[HttpPost]
-public async Task<IActionResult> CreateOrder(
-    [FromBody] CreateOrderRequest request,
-    [FromHeader(Name = "X-Idempotency-Key")] Guid idempotencyKey)
-{
-    var command = new CreateOrderCommand(...) 
-    { 
-        IdempotencyKey = idempotencyKey 
-    };
-    var result = await _sender.Send(command);
-    return result.Match(Ok, BadRequest);
-}
-```
+The API middleware automatically detects the `X-Idempotency-Key` header on POST requests.
+- If present, it enables the `IdempotentCommandBehavior`.
+- If a duplicate key is sent, the API returns the *original* response (200/201) without processing the command again.
 
-### Exception Handling
-Global exception middleware converts:
-- `ValidationException` → 400 Bad Request
-- `NotFoundException` → 404 Not Found
-- `DomainException` → 400 Bad Request
-- Unhandled → 500 Internal Server Error
-
-## ⚙️ Configuration
-
-### appsettings.json
-```json
-{
-  "ConnectionStrings": {
-    "DefaultConnection": "Host=filoshop-db;Port=5432;...",
-    "Cache": "filoshop-redis:6379"
-  },
-  "Authentication": {
-    "Audience": "filoshop-api",
-    "MetadataUrl": "http://keycloak:8080/..."
-  },
-  "Outbox": {
-    "IntervalInSeconds": 10,
-    "BatchSize": 20
-  }
-}
-```
-
-## 🔌 Dependency Injection
-
-Configured in `Startup.cs`:
-
-```csharp
-services.AddApplication()             // Application layer
-       .AddInfrastructurePersistence(config)  // Persistence
-       .AddInfrastructureServices(config);    // Auth, Caching
-```
-
-## 🗺️ Endpoints
-
-### CatalogItems
-- `GET /api/v1/catalogitems` - List items (paginated)
-- `GET /api/v1/catalogitems/{id}` - Get by ID
-- `POST /api/v1/catalogitems` - Create item (idempotent)
-- `PUT /api/v1/catalogitems/{id}` - Update item
-- `DELETE /api/v1/catalogitems/{id}` - Delete item
-
-### Users
-- `POST /api/v1/users/register` - Register new user
-- `GET /api/v1/users/{id}` - Get user details
-
-### Orders
-- `POST /api/v1/orders` - Create order (idempotent)
-- `GET /api/v1/orders/{id}` - Get order details
-
-### Baskets
-- `GET /api/v1/baskets/{userId}` - Get user's basket
-- `POST /api/v1/baskets/items` - Add item to basket
-- `DELETE /api/v1/baskets/items/{id}` - Remove item
-
-## 🛠️ Middleware Pipeline
-
-1. **Exception Handling** - Global error handling
-2. **Logging** - Serilog (outputs to Seq)
-3. **Authentication** - JWT Bearer (Keycloak)
-4. **Authorization** - Permission-based
-5. **CORS** - Configured for frontend
-6. **Swagger** - API documentation
+### API Versioning
+We use URL-based versioning (`/api/v1/...`) to allow future breaking changes without disrupting existing clients.
 
 ## 🐳 Docker Support
+The solution includes a full Docker stack:
+- **API**: The .NET 9 application
+- **Database**: PostgreSQL 16
+- **Cache**: Redis 8
+- **Identity**: Keycloak 26
+- **Logging**: Seq
 
-Includes:
-- Multi-stage `Dockerfile` for optimized builds
-- `docker-compose.yaml` for full stack:
-  - PostgreSQL
-  - Redis
-  - Keycloak
-  - Seq (logging)
-
-## 🔗 Dependencies
-
-- **ASP.NET Core 9.0**
-- **MediatR** - CQRS
-- **FluentValidation.AspNetCore**
-- **Swashbuckle** - Swagger/OpenAPI
-- **Serilog** - Logging
-- **Microsoft.AspNetCore.Authentication.JwtBearer**
-
-## 🚀 Running Locally
-
+To run the full stack:
 ```powershell
-# Using Docker Compose
-docker compose up --build
-
-# Or locally
-dotnet run --project FiloShop.Api
+docker compose up -d --build
 ```
-
-## 📝 API Documentation
-
-Access Swagger UI at: `http://localhost:5000/swagger`
-
----
-
-This layer is **stable** and primarily handles HTTP concerns. Business logic lives in Application/Domain layers.
+Access Swagger at: `http://localhost:5000/swagger`

@@ -1,122 +1,30 @@
 # FiloShop.SharedKernel
 
-The **SharedKernel** is a reusable foundational layer containing common building blocks for Domain-Driven Design (DDD) and Clean Architecture. It provides base classes, interfaces, and patterns used across all projects.
+## 🏗️ Architecture & Design
+The **SharedKernel** is the foundational "batteries-included" layer for FiloShop. It provides a standardized set of DDD patterns and cross-cutting concerns to allow specific domains to focus on business logic rather than plumbing.
 
-## 📦 What's Inside
+**Key Design Decision**: This layer is deliberately *opinionated*. It includes core implementations for common patterns (MediatR, Specifications, Logging) to ensure consistency across the application, even if it trades some purely theoretical decoupling for practical developer velocity.
 
-### 🎯 CQRS (Command Query Responsibility Segregation)
+## 🔘 Patterns & Capabilities
+The following architectural patterns are available "out of the box":
 
-Complete implementation of the CQRS pattern using MediatR:
+- **CQRS**: Clear separation of command (write) and query (read) responsibilities.
+- **Result Pattern**: explicit, type-safe error handling to eliminate "exception-driven logic".
+- **Transactional Outbox**: Guarantees that domain events are published reliably, even if the broker is temporarily down.
+- **Idempotency**: Prevents duplicate processing of sensitive operations (like payments) when retries occur.
+- **Pipeline Behaviors**: Automatic handling of cross-cutting concerns (Logging, Validation, Caching, Transaction Management) for every request.
+- **DDD Building Blocks**: Base classes for Aggregate Roots, Entities, and Value Objects to enforce domain modeling rules.
+- **Specifications**: Encapsulates complex query logic into reusable classes, keeping repositories simple.
 
-- **Commands**: `ICommand`, `ICommand<TResponse>`, `ICommandHandler<>`
-- **Queries**: `IQuery<TResponse>`, `IQueryHandler<>`
-- **Idempotent Commands**: `IIdempotentRequest<TResponse>` with automatic deduplication
+## ⚖️ Architectural Decisions & Trade-offs
 
-### 🔁 Idempotency System
+| Decision | Context & Benefit | Trade-off / Difficulty |
+|----------|-------------------|------------------------|
+| **Infrastructure inside SharedKernel** | Included Specification & Serilog libraries to create a "complete" starter kit for any DDD project. | Increases coupling; swapping logging/persistence libraries requires changes to this core layer. |
+| **Result Pattern over Exceptions** | Forces developers to handle failure cases explicitly, improving system reliability. | Adds verbosity to method signatures and requires "unwrapping" results in the API layer. |
+| **Automatic Pipeline Behaviors** | Validations and logging happen automatically, reducing code duplication in handlers. | Can obscure execution flow; developers must be aware of the "hidden" logic running around their handlers. |
 
-Prevents duplicate command execution with persistence-backed tracking:
-
-- `IIdempotencyStore` - Interface for storage
-- `IdempotencyRecord` - Stores executed command results
-- `IdempotentCommandBehavior` - MediatR pipeline behavior
-- See [readme_idempotency.md](./readme_idempotency.md) for detailed documentation
-
-### 🧩 Base Entities & Events
-
-- `BaseEntity` - Base aggregate root with:
-  - Auto-managed `CreatedAt`/`UpdatedAt` (via interceptor)
-  - Domain event support
-  - Guid-based identity
-- `IDomainEvent` - Marker interface for domain events
-- Automatic audit field population via `AuditableEntityInterceptor`
-
-### 🔧 MediatR Behaviors (Pipeline)
-
-Cross-cutting concerns implemented as behaviors:
-
-1. **ValidationBehavior** - FluentValidation integration
-2. **LoggingBehavior** - Request/response logging
-3. **QueryCachingBehavior** - Automatic query result caching
-4. **IdempotentCommandBehavior** - Command deduplication
-5. **UnitOfWorkBehavior** - Transaction management
-
-### 🌐 API Standards
-
-- `ApiResponse<T>` - Standardized API response wrapper
-- `PaginatedResult<T>` - Pagination support
-- `PagedQuery` - Base class for paginated queries
-
-### 📤 Outbox Pattern
-
-Reliable event publishing for distributed systems:
-
-- `OutboxMessage` - Event storage for transactional outbox
-- Ensures domain events are eventually published
-
-### 🛠️ Core Interfaces
-
-- `IUnitOfWork` - Transaction boundary
-- `ISqlConnectionFactory` - Database connection factory
-- `ICacheService` - Caching abstraction
-- `IDateTimeProvider` - Testable time provider
-
-### ⚙️ Providers
-
-- `SystemDateTimeProvider` - Production time provider
-- Supports dependency injection for testability
-
-### ❌ Result Pattern
-
-Type-safe error handling without exceptions:
-
-- `Result` / `Result<T>` - Success/failure representation
-- `Error` - Structured error information
-- Eliminates throw/catch for business logic failures
-
-## 🔗 Dependencies
-
-- **MediatR** - CQRS and pipeline behaviors
-- **FluentValidation** - Request validation
-- **Microsoft.Extensions.Caching.Abstractions** - Caching
-
-## 📚 Usage Examples
-
-### Command with Idempotency
-```csharp
-public record CreateOrderCommand(Guid UserId, Address ShippingAddress) 
-    : IIdempotentRequest<Guid>
-{
-    public Guid IdempotencyKey { get; init; }
-}
-```
-
-### Query with Caching
-```csharp
-public record GetUserByIdQuery(Guid UserId) : ICachedQuery<UserDto>
-{
-    public string CacheKey => $"user-{UserId}";
-    public TimeSpan? Expiration => TimeSpan.FromMinutes(5);
-}
-```
-
-### Domain Event
-```csharp
-public record OrderCreatedDomainEvent(Guid OrderId) : IDomainEvent;
-
-// In entity
-var order = new Order(...);
-order.RaiseDomainEvent(new OrderCreatedDomainEvent(order.Id));
-```
-
-## 🎯 Design Principles
-
-- **Dependency-Free**: No references to infrastructure or domain-specific logic
-- **Reusable**: Can be used across multiple projects
-- **Testable**: All abstractions support mocking
-- **DDD-Aligned**: Implements tactical DDD patterns
-
-## 🚀 Getting Started
-
-This layer is automatically referenced by Domain and Infrastructure layers. No manual setup required.
-
-For idempotency implementation details, see [readme_idempotency.md](./readme_idempotency.md).
+## 📚 Deep Dive Guides
+For implementation specifics of complex patterns, see:
+- [Idempotency Deep Dive](./readme_idempotency.md)
+- [Outbox Pattern Guide](./readme_outbox.md)
