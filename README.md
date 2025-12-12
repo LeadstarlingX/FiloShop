@@ -2,7 +2,7 @@
 
 A learning-focused, "nearly" production-ready e-commerce platform built with **.NET 9**, implementing **DDD**, **CQRS**, and **Clean Architecture**.
 
-> **Status**: 🚧 Work in Progress (Documentation & Structure Phase)
+> **Status**: 🚧 Work in Progress (Documentation & Structure Phase), more features to add. :(
 
 ## 🏗️ Architecture
 The system uses a **Layered Architecture** with strict dependency rules:
