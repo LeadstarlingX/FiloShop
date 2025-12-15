@@ -51,3 +51,13 @@ docker compose up -d --build
 
 ## 🤝 Contributing
 Please read the [CONTRIBUTION.md](./CONTRIBUTION.md) carefully. We enforce strict architectural boundaries.
+
+## 🐛 Found a Bug?
+If you encounter any issues or have a feature request, please submit it via GitHub Issues for this repository.
+
+**[Report an Issue](https://github.com/LeadstarlingX/FiloShop/issues/new)**
+
+> *Please include exception stack traces, reproduction steps, and platform details.*
+
+## 📄 License
+This project is licensed under the MIT License. See [LICENSE.md](./LICENSE.md) for details.
