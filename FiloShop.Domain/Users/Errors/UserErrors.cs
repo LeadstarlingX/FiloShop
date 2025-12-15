@@ -2,7 +2,7 @@
 
 namespace FiloShop.Domain.Users.Errors;
 
-public class UserErrors
+public static class UserErrors
 {
     public static Error NotFound = new(
         "User.Found",

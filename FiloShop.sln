@@ -45,6 +45,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "solutionitems", "solutionit
 		compose.yaml = compose.yaml
 		readme_testing.md = readme_testing.md
 		readme_keycloak_setup.md = readme_keycloak_setup.md
+		Directory.Packages.props = Directory.Packages.props
+		Directory.Build.props = Directory.Build.props
 	EndProjectSection
 EndProject
 Global

@@ -1,9 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net9.0</TargetFramework>
-        <ImplicitUsings>enable</ImplicitUsings>
-        <Nullable>enable</Nullable>
     </PropertyGroup>
 
     <ItemGroup>
@@ -11,10 +8,10 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Asp.Versioning.Http" Version="8.1.0" />
-      <PackageReference Include="Asp.Versioning.Mvc.ApiExplorer" Version="8.1.0" />
-      <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.3.0" />
-      <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.11" />
+      <PackageReference Include="Asp.Versioning.Http" />
+      <PackageReference Include="Asp.Versioning.Mvc.ApiExplorer" />
+      <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" />
+      <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
     </ItemGroup>
 
     <ItemGroup>
