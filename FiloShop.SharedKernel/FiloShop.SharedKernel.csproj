@@ -8,8 +8,10 @@
         <PackageReference Include="Ardalis.Specification" />
         <PackageReference Include="FluentValidation.DependencyInjectionExtensions" />
         <PackageReference Include="MediatR" />
+        <PackageReference Include="Microsoft.Extensions.Http.Resilience" />
         <PackageReference Include="Neolution.Extensions.Caching.Distributed" />
         <PackageReference Include="Newtonsoft.Json" />
+        <PackageReference Include="Polly" />
         <PackageReference Include="Serilog" />
         <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
     </ItemGroup>
