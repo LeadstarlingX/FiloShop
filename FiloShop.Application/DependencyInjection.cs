@@ -13,6 +13,7 @@ public static class DependencyInjection
             configuration.RegisterServicesFromAssembly(typeof(DependencyInjection).Assembly);
             
             // Pipeline Behaviors (Only for Commands/Queries)
+            configuration.AddOpenBehavior(typeof(DlqBehavior<,>)); // Outermost: Catch final failures
             configuration.AddOpenBehavior(typeof(LoggingBehavior<,>));
             configuration.AddOpenBehavior(typeof(ResilienceBehavior<,>));
             configuration.AddOpenBehavior(typeof(ValidationBehavior<,>));

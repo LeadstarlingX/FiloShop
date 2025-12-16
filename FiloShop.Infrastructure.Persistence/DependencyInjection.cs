@@ -10,6 +10,7 @@ using FiloShop.Infrastructure.Persistence.Idempotency;
 using FiloShop.Infrastructure.Persistence.Interceptors;
 using FiloShop.Infrastructure.Persistence.Providers.Data;
 using FiloShop.Infrastructure.Persistence.Repositories;
+using FiloShop.Infrastructure.Persistence.Services;
 using FiloShop.SharedKernel.Idempotency;
 using FiloShop.SharedKernel.Interfaces;
 using FiloShop.SharedKernel.Providers;
@@ -67,6 +68,8 @@ public static class DependencyInjection
 
         services.AddSingleton<ISqlConnectionFactory>(_ =>
             new SqlConnectionFactory(configuration.GetConnectionString("DefaultConnection")!));
+
+        services.AddScoped<IDeadLetterQueueWriter, DeadLetterQueueWriter>();
 
         SqlMapper.AddTypeHandler(new DateOnlyTypeHandler());
 
