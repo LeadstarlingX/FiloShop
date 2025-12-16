@@ -1,5 +1,6 @@
 ﻿using Asp.Versioning;
 using FiloShop.Application.CatalogBrands.Queries.GetCatalogBrands;
+using FiloShop.Presentation.Abstractions;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -10,11 +11,11 @@ namespace FiloShop.Presentation.Controllers.CatalogBrands;
 [ApiController]
 [ApiVersion(ApiVersions.V1)]
 [Route("api/v{version:apiVersion}/[controller]")]
-public class CatalogBrandsController : ControllerBase
+public class CatalogBrandsController : ApiController
 {
     private readonly ISender _sender;
 
-    public CatalogBrandsController(ISender sender)
+    public CatalogBrandsController(ISender sender) : base(sender)
     {
         _sender = sender;
     }
