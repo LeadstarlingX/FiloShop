@@ -9,4 +9,8 @@
         <PackageReference Include="FluentAssertions" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\FiloShop.Domain\FiloShop.Domain.csproj" />
+    </ItemGroup>
+
 </Project>
