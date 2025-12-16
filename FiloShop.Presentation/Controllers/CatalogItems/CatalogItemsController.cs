@@ -4,6 +4,7 @@ using FiloShop.Application.CatalogItems.Commands.DeleteCatalogItem;
 using FiloShop.Application.CatalogItems.Commands.UpdateCatalogItem;
 using FiloShop.Application.CatalogItems.Queries.GetCatalogItemById;
 using FiloShop.Application.CatalogItems.Queries.GetCatalogItemListPaged;
+using FiloShop.Presentation.Abstractions;
 using FiloShop.Presentation.Controllers.CatalogItems.Requests;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -13,16 +14,11 @@ namespace FiloShop.Presentation.Controllers.CatalogItems;
 
 
 // [Authorize]
-[ApiController]
 [ApiVersion(ApiVersions.V1)]
-[Route("api/v{version:apiVersion}/[controller]")]
-public class CatalogItemsController : ControllerBase
+public class CatalogItemsController : ApiController
 {
-    private readonly ISender _sender;
-
-    public CatalogItemsController(ISender sender)
+    public CatalogItemsController(ISender sender) : base(sender)
     {
-        _sender = sender;
     }
 
     [HttpGet]
@@ -30,9 +26,8 @@ public class CatalogItemsController : ControllerBase
     {
         var query = new GetCatalogItemByIdQuery(catalogItemId);
         
-        var result = await _sender.Send(query, cancellationToken);
-
-        return Ok(result.Value);
+        // Using the new helper ensures consistency
+        return await Dispatch(query, cancellationToken);
     }
 
 
@@ -43,9 +38,7 @@ public class CatalogItemsController : ControllerBase
     {
         var query = new GetCatalogItemListPagedQuery(pageSize, pageIndex, catalogBrandId, catalogTypeId);
         
-        var result = await _sender.Send(query, cancellationToken);
-    
-        return Ok(result.Value);
+        return await Dispatch(query, cancellationToken);
     }
 
 
@@ -66,11 +59,7 @@ public class CatalogItemsController : ControllerBase
             request.PictureName ,
             request.Price);
         
-        var result = await _sender.Send(command, cancellationToken);
-
-        if (result.IsFailure) return BadRequest(result.Error);
-
-        return Ok(result.Value);
+        return await Dispatch(command, cancellationToken);
     }
 
     [HttpDelete]
@@ -81,11 +70,11 @@ public class CatalogItemsController : ControllerBase
     {
         var command = new DeleteCatalogItemCommand(idempotencyKey ,catalogItemId);
         
-        var result = await _sender.Send(command, cancellationToken);
+        var result = await Sender.Send(command, cancellationToken);
 
-        if (result.IsFailure) return BadRequest(result.Error);
-
-        return Ok(result.IsSuccess);
+    
+        
+        return FormatResponse(result);
     }
 
     [HttpPut]
@@ -107,11 +96,9 @@ public class CatalogItemsController : ControllerBase
             request.Price
             );
         
-        var result = await _sender.Send(command, cancellationToken);
+        var result = await Sender.Send(command, cancellationToken);
 
-        if (result.IsFailure) return BadRequest(result.Error);
-
-        return Ok(result.IsSuccess);
+        return FormatResponse(result);
     }
     
 }
