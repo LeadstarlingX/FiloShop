@@ -14,6 +14,7 @@ public static class DependencyInjection
             
             // Pipeline Behaviors (Only for Commands/Queries)
             configuration.AddOpenBehavior(typeof(LoggingBehavior<,>));
+            configuration.AddOpenBehavior(typeof(ResilienceBehavior<,>));
             configuration.AddOpenBehavior(typeof(ValidationBehavior<,>));
             configuration.AddOpenBehavior(typeof(QueryCachingBehavior<,>));
             

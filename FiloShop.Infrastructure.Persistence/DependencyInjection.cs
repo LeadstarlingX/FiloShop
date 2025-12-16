@@ -55,8 +55,14 @@ public static class DependencyInjection
         {
             var interceptor = serviceProvider.GetRequiredService<AuditableEntityInterceptor>();
             
-            options.UseNpgsql(configuration.GetConnectionString("DefaultConnection"))
-                   .AddInterceptors(interceptor);
+            options.UseNpgsql(configuration.GetConnectionString("DefaultConnection"), npgsqlOptions =>
+            {
+                npgsqlOptions.EnableRetryOnFailure(
+                    maxRetryCount: 3,
+                    maxRetryDelay: TimeSpan.FromSeconds(10),
+                    errorCodesToAdd: null);
+            })
+            .AddInterceptors(interceptor);
         });
 
         services.AddSingleton<ISqlConnectionFactory>(_ =>
