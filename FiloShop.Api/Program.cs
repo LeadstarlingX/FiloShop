@@ -1,4 +1,6 @@
+using OpenTelemetry.Trace;
 using Serilog;
+using Npgsql;
 
 namespace FiloShop.Api;
 
@@ -14,6 +16,19 @@ public static class Program
         return Host.CreateDefaultBuilder(args)
             .UseSerilog((context, configuration) =>
                 configuration.ReadFrom.Configuration(context.Configuration))
+            .ConfigureServices(services =>
+            {
+                services.AddOpenTelemetry()
+                    .WithTracing(tracing =>
+                    {
+                        tracing
+                            .AddAspNetCoreInstrumentation()
+                            .AddHttpClientInstrumentation()
+                            .AddEntityFrameworkCoreInstrumentation()
+                            .AddNpgsql()
+                            .AddConsoleExporter();
+                    });
+            })
             .ConfigureWebHostDefaults(webBuilder => { webBuilder.UseStartup<Startup>(); });
     }
 }

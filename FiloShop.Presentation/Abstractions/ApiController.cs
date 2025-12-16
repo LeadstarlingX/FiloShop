@@ -32,21 +32,25 @@ public abstract class ApiController : ControllerBase
 
     protected IActionResult FormatResponse<T>(Result<T> result)
     {
+        var traceId = System.Diagnostics.Activity.Current?.Id ?? HttpContext.TraceIdentifier;
+
         if (result.IsSuccess)
         {
-            return Ok(ApiResponse<T>.Ok(result.Value));
+            return Ok(ApiResponse<T>.Ok(result.Value, new ResponseMetadata { TraceId = traceId }));
         }
 
-        return BadRequest(ApiResponse<T>.Fail(result.Error.Code, result.Error.Message));
+        return BadRequest(ApiResponse<T>.Fail(result.Error.Code, result.Error.Message, traceId: traceId));
     }
     
     protected IActionResult FormatResponse(Result result)
     {
+        var traceId = System.Diagnostics.Activity.Current?.Id ?? HttpContext.TraceIdentifier;
+        
         if (result.IsSuccess)
         {
-            return Ok(ApiResponse.Ok());
+            return Ok(ApiResponse.Ok(new ResponseMetadata { TraceId = traceId }));
         }
 
-        return BadRequest(ApiResponse.Fail(result.Error.Code, result.Error.Message));
+        return BadRequest(ApiResponse.Fail(result.Error.Code, result.Error.Message, traceId: traceId));
     }
 }

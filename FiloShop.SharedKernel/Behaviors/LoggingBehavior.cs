@@ -26,20 +26,23 @@ public class LoggingBehavior<TRequest, TResponse>
 
         try
         {
-            _logger.LogInformation("Executing request {RequestName}", requestName);
+            using (LogContext.PushProperty("TraceId", System.Diagnostics.Activity.Current?.Id ?? Guid.NewGuid().ToString()))
+            {
+                _logger.LogInformation("Executing request {RequestName}", requestName);
 
-            var result = await next();
+                var result = await next();
 
-            if (result.IsSuccess)
-                _logger.LogInformation("Request {RequestName} processed successfully", requestName);
-            else
-                using (LogContext.PushProperty("Error", result.Error, true))
-                {
-                    _logger.LogError("Request {RequestName} failed with {ErrorCode}: {ErrorMessage}", 
-                        requestName, result.Error.Code, result.Error.Message);
-                }
+                if (result.IsSuccess)
+                    _logger.LogInformation("Request {RequestName} processed successfully", requestName);
+                else
+                    using (LogContext.PushProperty("Error", result.Error, true))
+                    {
+                        _logger.LogError("Request {RequestName} failed with {ErrorCode}: {ErrorMessage}", 
+                            requestName, result.Error.Code, result.Error.Message);
+                    }
 
-            return result;
+                return result;
+            }
         }
         catch (Exception exception)
         {
