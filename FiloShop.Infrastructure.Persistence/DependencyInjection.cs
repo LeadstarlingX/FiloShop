@@ -52,7 +52,7 @@ public static class DependencyInjection
     {
         services.AddSingleton<AuditableEntityInterceptor>();
         
-        services.AddDbContext<ApplicationDbContext>((serviceProvider, options) =>
+        services.AddDbContextFactory<ApplicationDbContext>((serviceProvider, options) =>
         {
             var interceptor = serviceProvider.GetRequiredService<AuditableEntityInterceptor>();
             
