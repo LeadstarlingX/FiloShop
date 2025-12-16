@@ -9,4 +9,14 @@
         <PackageReference Include="NetArchTest.Rules" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\FiloShop.Domain\FiloShop.Domain.csproj" />
+      <ProjectReference Include="..\FiloShop.Application\FiloShop.Application.csproj" />
+      <ProjectReference Include="..\FiloShop.Infrastructure.Persistence\FiloShop.Infrastructure.Persistence.csproj" />
+      <ProjectReference Include="..\FiloShop.Infrastructure.Services\FiloShop.Infrastructure.Services.csproj" />
+      <ProjectReference Include="..\FiloShop.SharedKernel\FiloShop.SharedKernel.csproj" />
+      <ProjectReference Include="..\FiloShop.Api\FiloShop.Api.csproj" />
+      <ProjectReference Include="..\FiloShop.Presentation\FiloShop.Presentation.csproj" />
+    </ItemGroup>
+
 </Project>
