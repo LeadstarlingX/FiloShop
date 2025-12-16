@@ -13,20 +13,13 @@ namespace FiloShop.Presentation.Controllers.CatalogBrands;
 [Route("api/v{version:apiVersion}/[controller]")]
 public class CatalogBrandsController : ApiController
 {
-    private readonly ISender _sender;
-
     public CatalogBrandsController(ISender sender) : base(sender)
     {
-        _sender = sender;
     }
     
     [HttpGet]
     public async Task<IActionResult> GetCatalogBrands(CancellationToken cancellationToken)
     {
-        var query = new GetCatalogBrandsQuery();
-        
-        var result = await _sender.Send(query, cancellationToken);
-
-        return Ok(result.Value);
+        return await Dispatch(new GetCatalogBrandsQuery(), cancellationToken);
     }
 }

@@ -23,18 +23,7 @@ public class BehaviorNamingTests : NamingTest
             .Should()
             .HaveNameMatching("Behavior(`\\d+)?$")
             .GetResult();
-    
-        if(!sharedKernelResult.IsSuccessful)
-            foreach (var x in sharedKernelResult.FailingTypeNames)
-            {
-                Console.WriteLine(x);
-            }
         
-        if(!applicationResult.IsSuccessful)
-            foreach (var x in applicationResult.FailingTypeNames)
-            {
-                Console.WriteLine(x);
-            }
         await Assert.That(applicationResult.IsSuccessful && sharedKernelResult.IsSuccessful).IsTrue();
     }
 }

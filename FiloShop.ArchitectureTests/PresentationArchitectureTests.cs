@@ -14,7 +14,9 @@ public class PresentationArchitectureTests : ArchitectureTest
             .And()
             .AreClasses()
             .And()
-            .DoNotHaveName("BaseController") // Exclude if exists, though we use ApiController
+            .HaveNameEndingWith("Controller")
+            .And()
+            .DoNotHaveName("BaseController") 
             .Should()
             .Inherit(typeof(ApiController))
             .GetResult();

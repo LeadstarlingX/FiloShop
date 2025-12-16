@@ -2,6 +2,7 @@
 using FiloShop.Application.Users.Commands.LogInUser;
 using FiloShop.Application.Users.Commands.RegisterUser;
 using FiloShop.Application.Users.Queries.GetLoggedInUser;
+using FiloShop.Presentation.Abstractions;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -12,24 +13,17 @@ namespace FiloShop.Presentation.Controllers.Users;
 [ApiController]
 [ApiVersion(ApiVersions.V1)]
 [Route("api/v{version:apiVersion}/[controller]")]
-public sealed class UsersController : ControllerBase
+public sealed class UsersController : ApiController
 {
-    private readonly ISender _sender;
-
-    public UsersController(ISender sender)
+    public UsersController(ISender sender) : base(sender)
     {
-        _sender = sender;
     }
 
     [HttpGet("me")]
     // [HasPermission(Permissions.UsersRead)]
     public async Task<IActionResult> GetLoggedInUser(CancellationToken cancellationToken)
     {
-        var query = new GetLoggedInUserQuery();
-
-        var result = await _sender.Send(query, cancellationToken);
-
-        return Ok(result.Value);
+        return await Dispatch(new GetLoggedInUserQuery(), cancellationToken);
     }
 
     [AllowAnonymous]
@@ -46,11 +40,7 @@ public sealed class UsersController : ControllerBase
             request.LastName,
             request.Password);
 
-        var result = await _sender.Send(command, cancellationToken);
-
-        if (result.IsFailure) return BadRequest(result.Error);
-
-        return Ok(result.Value);
+        return await Dispatch(command, cancellationToken);
     }
 
     [AllowAnonymous]
@@ -62,10 +52,6 @@ public sealed class UsersController : ControllerBase
         var command = new LogInUserCommand(
             request.Email, request.Password);
 
-        var result = await _sender.Send(command, cancellationToken);
-
-        if (result.IsFailure) return Unauthorized();
-
-        return Ok(result.Value);
+        return await Dispatch(command, cancellationToken);
     }
 }
