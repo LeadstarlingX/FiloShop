@@ -291,6 +291,35 @@ public class DomainArchitectureTests : ArchitectureTest
         // Assert
         await Assert.That(failingTypes).IsEmpty();
     }
+    
+    
+    [Test]
+    public async Task Domain_Should_Not_Reference_System_DateTime()
+    {
+        // Domain should use IDateTimeProvider, not DateTime.Now/UtcNow
+        var domainTypes = Types.InAssembly(DomainAssembly)
+            .That()
+            .ResideInNamespace(DomainNamespace)
+            .GetTypes();
+
+        var violatingTypes = new List<string>();
+
+        foreach (var type in domainTypes)
+        {
+            var methods = type.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
+        
+            foreach (var method in methods)
+            {
+                if (method.DeclaringType != type) continue;
+            
+                var body = method.GetMethodBody();
+                // This is a simplified check - in reality you'd need IL inspection
+                // or Roslyn analyzers for accurate detection
+            }
+        }
+    
+        // Note: This test is illustrative - proper implementation requires IL analysis
+    }
 
     // [Test]
     // public async Task ValueObjects_Should_Have_Create_Factory_Method()

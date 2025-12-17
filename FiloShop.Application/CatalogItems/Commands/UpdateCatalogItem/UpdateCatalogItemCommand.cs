@@ -3,7 +3,7 @@ using FiloShop.SharedKernel.CQRS.Commands;
 
 namespace FiloShop.Application.CatalogItems.Commands.UpdateCatalogItem;
 
-public record UpdateCatalogItemCommand(
+public sealed record UpdateCatalogItemCommand(
     Guid IdempotencyKey,
     Guid Id,
     Guid CatalogBrandId,

@@ -74,4 +74,6 @@ public class ValueObjectTests
         var money = Money.Zero(Currency.Usd);
         money.IsZero().Should().BeTrue();
     }
+    
+    
 }
